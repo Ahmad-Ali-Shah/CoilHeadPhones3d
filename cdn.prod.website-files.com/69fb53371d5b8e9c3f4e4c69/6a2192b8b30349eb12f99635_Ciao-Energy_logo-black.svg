@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" fill="none">
+  <g opacity="0.92">
+    <path d="M32 10 C22 16 16 24 16 32 C16 24 10 16 0 10 C6 22 10 30 16 34 C10 38 6 46 0 58 C10 52 16 44 16 36 C16 44 22 52 32 58 C26 46 22 38 16 34 C22 30 26 22 32 10 Z" fill="#c9805a"/>
+    <path d="M16 20 C16 26 16 30 16 34 C16 38 16 42 16 48" stroke="#141414" stroke-width="1.4" stroke-linecap="round"/>
+  </g>
+  <text x="46" y="30" font-family="Helvetica, Arial, sans-serif" font-size="21" font-weight="600" letter-spacing="1" fill="#141414">SOUND</text>
+  <text x="46" y="52" font-family="Helvetica, Arial, sans-serif" font-size="21" font-weight="300" letter-spacing="3" fill="#c9805a">ANGELS</text>
+</svg>
