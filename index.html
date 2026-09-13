@@ -2634,28 +2634,28 @@
       },
     });
 
-    // Taste - slow, smooth dolly in; hoops pass completely through and over the headphones
+    // Taste - slow, smooth dolly in; hoops frame cleanly around the headphones
     tl.to(data, {
       camPosX: 0,
       camPosY: -0.2,
-      camPosZ: 14,
-      camRotX: (Math.PI / 180) * -10,
-      camRotY: (Math.PI / 180) * 12,
-      camRotZ: (Math.PI / 180) * 8,
-      fov: 28,
-      canScale: 1.1,
-      canPosX: 0.25,
-      canPosY: -0.3,
+      camPosZ: 15,
+      camRotX: 0,
+      camRotY: 0,
+      camRotZ: 0,
+      fov: 24,
+      canScale: 1.15,
+      canPosX: 0,
+      canPosY: -0.2,
       canPosZ: 0,
-      canRotX: (Math.PI / 180) * -20,
-      canRotY: (Math.PI / 180) * 20,
-      canRotZ: (Math.PI / 180) * 12,
+      canRotX: 0,
+      canRotY: 0,
+      canRotZ: 0,
       canSpin: 0,
       spacing: 3.8,
       wave: 0,
       swirl: 0,
-      baseOffset: -2.85, // Smoothly glides completely outside and over the headphones
-      lightIntensity: 35,
+      baseOffset: 2.85,
+      lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 1,
       spotIntensity: 10,
@@ -2671,24 +2671,24 @@
     // Advantage 1 - Smooth showcase angle
     tl.to(data, {
       camPosX: 0,
-      camPosY: -1.2,
+      camPosY: -0.8,
       camPosZ: 15,
-      camRotX: (Math.PI / 180) * 8,
+      camRotX: 0,
       camRotY: 0,
-      camRotZ: (Math.PI / 180) * -6,
+      camRotZ: 0,
       fov: 22,
       canScale: 1.1,
       canPosX: 0,
-      canPosY: -0.4,
+      canPosY: -0.3,
       canPosZ: 0,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 80,
+      canSpin: 0,
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 2.85, // Hoops return smoothly to framing the headphone
+      baseOffset: 2.85,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2703,20 +2703,20 @@
     // Advantage 2
     tl.to(data, {
       camPosX: 0,
-      camPosY: -1.2,
+      camPosY: -0.8,
       camPosZ: 15,
-      camRotX: (Math.PI / 180) * 8,
+      camRotX: 0,
       camRotY: 0,
-      camRotZ: (Math.PI / 180) * 4,
+      camRotZ: 0,
       fov: 22,
       canScale: 1.1,
       canPosX: 0,
-      canPosY: -0.25,
+      canPosY: -0.2,
       canPosZ: 0,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 90,
+      canSpin: 0,
       spacing: 3.6,
       wave: 0,
       swirl: 0,
@@ -2735,11 +2735,11 @@
     // Advantage 3
     tl.to(data, {
       camPosX: 0,
-      camPosY: -1.2,
+      camPosY: -0.8,
       camPosZ: 15,
-      camRotX: (Math.PI / 180) * 8,
+      camRotX: 0,
       camRotY: 0,
-      camRotZ: (Math.PI / 180) * -6,
+      camRotZ: 0,
       fov: 22,
       canScale: 1.1,
       canPosX: 0,
@@ -2748,7 +2748,7 @@
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 80,
+      canSpin: 0,
       spacing: 3.6,
       wave: 0,
       swirl: 0,
@@ -2767,20 +2767,20 @@
     // Advantage 4
     tl.to(data, {
       camPosX: 0,
-      camPosY: -1.2,
+      camPosY: -0.8,
       camPosZ: 15,
-      camRotX: (Math.PI / 180) * 8,
+      camRotX: 0,
       camRotY: 0,
-      camRotZ: (Math.PI / 180) * 4,
+      camRotZ: 0,
       fov: 22,
       canScale: 1.1,
       canPosX: 0,
-      canPosY: 0.25,
+      canPosY: 0.15,
       canPosZ: 0,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 90,
+      canSpin: 0,
       spacing: 3.6,
       wave: 0,
       swirl: 0,
@@ -2924,7 +2924,7 @@
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 15,
+      canSpin: 0,
       spacing: 3.8,
       wave: 0,
       swirl: 0,
@@ -2992,7 +2992,7 @@
       swirl: 0,
       lightWidth: 2,
       lightIntensity: 0,
-      canSpin: (Math.PI / 180) * 12,
+      canSpin: 0,
       pointerInfluence: 0,
     });
 
@@ -3161,9 +3161,9 @@
       let canPosX = x * data.spacing;
       let canPosY = Math.sin(canPosX * wave);
       let canPosZ = (Math.abs(x) * -1 - 0.2) * data.wave;
-      let canRotX = (-Math.PI / 180) * 15 * data.wave;
-      let canRotY = (canPosX * 0.4 - (Math.PI / 180) * 15) * data.wave;
-      let canRotZ = (Math.PI / 360) * 18 * data.wave;
+      let canRotX = 0;
+      let canRotY = 0;
+      let canRotZ = 0;
 
       // Packshot (swirl)
       canRotX = lerp(canRotX, x * 0.04 * windowRatio + 0.1, data.swirl);
@@ -3185,19 +3185,20 @@
       can.rotation.z = canRotZ;
       can.scale.set(canScale, canScale, canScale);
 
-      // Hero spotlight at start (p0=0): active finish in center rotates slowly, prominent and framed cleanly
-      const heroInfluence = clamp(1 - p0 * 2.0, 0, 1);
+      // Hero spotlight at start (p0=0): active finish in center stays steady and upright
+      const heroInfluence = clamp(1 - p0, 0, 1);
       if (heroInfluence > 0) {
         const distFromCenter = Math.abs(x);
         if (distFromCenter < carousel.spacing * 0.5) {
-          // Centered active headphone: slow majestic rotation, prominent display
+          // Centered active headphone: steady display with gentle ±2° ambient breathing float
           can.position.x = lerp(can.position.x, 0, heroInfluence);
           can.position.y = lerp(can.position.y, 0, heroInfluence);
           can.position.z = lerp(can.position.z, 0.2, heroInfluence);
           can.scale.setScalar(lerp(canScale, 1.25, heroInfluence));
-          can.rotation.y = lerp(can.rotation.y, time * 0.18, heroInfluence);
-          can.rotation.x = lerp(can.rotation.x, (-Math.PI / 180) * 6, heroInfluence);
-          can.rotation.z = lerp(can.rotation.z, (Math.PI / 180) * 3, heroInfluence);
+          const subtleFloatY = Math.sin(time * 0.6) * 0.035;
+          can.rotation.y = lerp(can.rotation.y, subtleFloatY, heroInfluence);
+          can.rotation.x = lerp(can.rotation.x, (-Math.PI / 180) * 3, heroInfluence);
+          can.rotation.z = lerp(can.rotation.z, 0, heroInfluence);
         } else {
           // Push side headphones out of viewport during hero mode to eliminate border clipping
           can.position.z = lerp(can.position.z, -30.0, heroInfluence);
@@ -3205,15 +3206,9 @@
         }
       }
 
-      // Mouse interaction
-      can.rotation.y += (pointer.smoothX / 1600) * data.pointerInfluence * p;
-      can.rotation.x += (pointer.smoothY / 1600) * data.pointerInfluence * p;
-
-      can.children.forEach((child) => {
-        if (child.isMesh) {
-          child.rotation.z = can.rotation.y * 0.4 + data.canSpin * p;
-        }
-      });
+      // Mouse interaction (smooth and gentle)
+      can.rotation.y += (pointer.smoothX / 2400) * data.pointerInfluence * p;
+      can.rotation.x += (pointer.smoothY / 2400) * data.pointerInfluence * p;
     });
     // ====== FIN ANIM CANNETTES ======
 
