@@ -3181,22 +3181,30 @@
       can.position.y = canPosY;
       can.position.z = canPosZ;
       can.rotation.x = canRotX;
-      can.rotation.y = canRotY;
       can.rotation.z = canRotZ;
       can.scale.set(canScale, canScale, canScale);
 
-      // Hero spotlight at start (p0=0): active finish in center stays steady and upright
+      // Rotation handling: only the middle headphone rotates slowly and continuously
+      const distFromCenter = Math.abs(x);
+      const isMiddle = distFromCenter < carousel.spacing * 0.5;
+      if (isMiddle) {
+        const safeDelta = Math.min(Math.max(delta, 0), 0.05);
+        const activeSpin = 1 - clamp(data.swirl * 4, 0, 1);
+        can.userData.rotY = (can.userData.rotY || 0) + safeDelta * 0.09 * activeSpin;
+        can.rotation.y = canRotY + can.userData.rotY * activeSpin;
+      } else {
+        can.userData.rotY = 0;
+        can.rotation.y = canRotY;
+      }
+
+      // Hero spotlight at start (p0=0): active finish in center stays prominent and cleanly framed
       const heroInfluence = clamp(1 - p0, 0, 1);
       if (heroInfluence > 0) {
-        const distFromCenter = Math.abs(x);
-        if (distFromCenter < carousel.spacing * 0.5) {
-          // Centered active headphone: steady display with gentle ±2° ambient breathing float
+        if (isMiddle) {
           can.position.x = lerp(can.position.x, 0, heroInfluence);
           can.position.y = lerp(can.position.y, 0, heroInfluence);
           can.position.z = lerp(can.position.z, 0.2, heroInfluence);
           can.scale.setScalar(lerp(canScale, 1.25, heroInfluence));
-          const subtleFloatY = Math.sin(time * 0.6) * 0.035;
-          can.rotation.y = lerp(can.rotation.y, subtleFloatY, heroInfluence);
           can.rotation.x = lerp(can.rotation.x, (-Math.PI / 180) * 3, heroInfluence);
           can.rotation.z = lerp(can.rotation.z, 0, heroInfluence);
         } else {
