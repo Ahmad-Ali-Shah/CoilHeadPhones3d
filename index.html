@@ -1624,9 +1624,21 @@
   };
 
   // #endregion Material Factory
-  // #region Lights
+  // Ambient & directional lights for rich headphone visibility and PBR highlights
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x222233, 1.8);
+  scene.add(hemiLight);
 
-  const color = white;
+  const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.5);
+  dirLight1.position.set(0, 2, 8);
+  scene.add(dirLight1);
+
+  const dirLight2 = new THREE.DirectionalLight(0xffeedd, 1.2);
+  dirLight2.position.set(-6, 3, 4);
+  scene.add(dirLight2);
+
+  const dirLight3 = new THREE.DirectionalLight(0xddf0ff, 1.2);
+  dirLight3.position.set(6, -2, 4);
+  scene.add(dirLight3);
 
   const spot1Intensity = 50;
   const spot1Distance = 8;
@@ -1684,11 +1696,16 @@
   // #region Base
 
   const loadingManager = new THREE.LoadingManager();
+  window.__assetsProgress = 0;
+  window.__assetsLoaded = false;
   loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
     const pct = Math.min(Math.round((itemsLoaded / itemsTotal) * 98), 98);
+    window.__assetsProgress = pct;
     window.dispatchEvent(new CustomEvent('assets:progress', { detail: { progress: pct } }));
   };
   loadingManager.onLoad = () => {
+    window.__assetsProgress = 100;
+    window.__assetsLoaded = true;
     window.dispatchEvent(new CustomEvent('assets:progress', { detail: { progress: 100 } }));
   };
 
@@ -1713,20 +1730,20 @@
   // pair using the same material and the same two-child structure the
   // baseOffset scroll animation expects (base.children[0] / [1]).
   // Hoops: 2 large procedural resonance rings that pass completely over/around
-  // the headphones without clipping through the geometry.
+  // the headphones without clipping through the geometry or top/bottom UI.
   const base = new THREE.Group();
-  const ringGeometry = new THREE.TorusGeometry(3.8, 0.045, 24, 128);
+  const ringGeometry = new THREE.TorusGeometry(3.1, 0.04, 24, 128);
   const hoopMaterial = makeMaterial({
-    color: 0xe2e8f0,
+    color: 0xf1f5f9,
     metalness: 0.95,
-    roughness: 0.18,
-    sheen: 0.6,
-    sheenColor: 0x93c5fd,
-    emissive: 0x0f172a,
-    emissiveIntensity: 0.35,
+    roughness: 0.16,
+    sheen: 0.7,
+    sheenColor: 0xa5b4fc,
+    emissive: 0x1e293b,
+    emissiveIntensity: 0.4,
     reflectivity: 1,
     ior: 2.2,
-    envMapIntensity: 0.9,
+    envMapIntensity: 1.2,
   });
   applyEnvironmentTint(hoopMaterial);
 
@@ -1741,12 +1758,15 @@
   // #endregion Base
   // #region Cans
 
-  // High-performance loading: Load ONLY the lightweight 400KB headphone model
-  // (instead of downloading 41MB across 3 models) for instant load speed.
-  const headphoneGltf = await gltfLoader.loadAsync('./assets/models/headphone/scene.gltf');
+  // High-performance loading: Load exactly 2 models (headphone 400KB + bose 13MB)
+  // Dropping hyperx (28MB) keeps downloads fast while providing rich model variety.
+  const [headphoneGltf, boseGltf] = await Promise.all([
+    gltfLoader.loadAsync('./assets/models/headphone/scene.gltf'),
+    gltfLoader.loadAsync('./bose_qc35_wireless_headphone_high_poly/scene.gltf'),
+  ]);
 
   // Bounding-box normalization: scale model so its largest dimension = targetSize.
-  const normalizeModel = (root, targetSize = 6.0) => {
+  const normalizeModel = (root, targetSize = 5.8) => {
     const box = new THREE.Box3().setFromObject(root);
     const size = new THREE.Vector3();
     const center = new THREE.Vector3();
@@ -1779,41 +1799,70 @@
     child.receiveShadow = false;
   });
 
-  // Create each distinct finish using bespoke PBR material techniques on the single model
+  const boseTemplate = normalizeModel(boseGltf.scene, 5.8);
+  boseTemplate.traverse((child) => {
+    if (!child.isMesh) return;
+    child.castShadow = false;
+    child.receiveShadow = false;
+  });
+
+  // Exactly 2 models used 3 times each with distinct colors across the 6 finishes:
+  // Model 1 (headphoneTemplate) -> Finishes 0: Obsidian Black, 1: Arctic White, 2: Rose Copper
+  // Model 2 (boseTemplate)      -> Finishes 3: Steel Gray,    4: Ocean Blue,   5: Matte Graphite
   const createCan = async (finish, index) => {
-    const can = headphoneTemplate.clone(true);
+    const isModel1 = index < 3;
+    const template = isModel1 ? headphoneTemplate : boseTemplate;
+    const can = template.clone(true);
 
     can.traverse((child) => {
       if (!child.isMesh || !child.material) return;
       const matName = (child.material.name || '').toLowerCase();
       const material = child.material.clone();
 
-      if (matName.includes('mousegray') || matName.includes('mouseblack')) {
-        // Outer ear cups & headband shell
-        material.color = new THREE.Color(finish.shellColor);
-        material.metalness = finish.metalness;
-        material.roughness = finish.roughness;
-        material.clearcoat = finish.clearcoat;
-        material.clearcoatRoughness = 0.15;
-      } else if (matName.includes('metalszary')) {
-        // High-polish metal sliders, pivot hinges & brackets
-        material.color = new THREE.Color(finish.metalColor);
-        material.metalness = 0.95;
-        material.roughness = 0.2;
-      } else if (matName.includes('ekoskora')) {
-        // Supple memory foam ear cushions & headband leather
-        material.color = new THREE.Color(finish.cushionColor);
-        material.roughness = 0.68;
-        material.metalness = 0.05;
-      } else if (matName.includes('foam')) {
-        // Inner acoustic mesh
-        material.color = new THREE.Color(finish.cushionColor).multiplyScalar(0.75);
-        material.roughness = 0.9;
+      if (isModel1) {
+        if (matName.includes('mousegray') || matName.includes('mouseblack')) {
+          // Outer ear cups & headband shell
+          material.color = new THREE.Color(finish.shellColor);
+          material.metalness = finish.metalness;
+          material.roughness = finish.roughness;
+          material.clearcoat = finish.clearcoat;
+          material.clearcoatRoughness = 0.15;
+        } else if (matName.includes('metalszary')) {
+          // High-polish metal sliders, pivot hinges & brackets
+          material.color = new THREE.Color(finish.metalColor);
+          material.metalness = 0.95;
+          material.roughness = 0.2;
+        } else if (matName.includes('ekoskora')) {
+          // Supple memory foam ear cushions & headband leather
+          material.color = new THREE.Color(finish.cushionColor);
+          material.roughness = 0.68;
+          material.metalness = 0.05;
+        } else if (matName.includes('foam')) {
+          // Inner acoustic mesh
+          material.color = new THREE.Color(finish.cushionColor).multiplyScalar(0.75);
+          material.roughness = 0.9;
+        } else {
+          material.color = new THREE.Color(finish.shellColor);
+        }
       } else {
-        material.color = new THREE.Color(finish.shellColor);
+        // Model 2 (Bose QC35) custom finish colors
+        if (finish.name === 'Steel Gray') {
+          material.color = new THREE.Color(0xb0bec5);
+          material.metalness = 0.92;
+          material.roughness = 0.24;
+        } else if (finish.name === 'Ocean Blue') {
+          material.color = new THREE.Color(0x2563eb);
+          material.metalness = 0.78;
+          material.roughness = 0.26;
+        } else {
+          // Matte Graphite
+          material.color = new THREE.Color(0x374151);
+          material.metalness = 0.45;
+          material.roughness = 0.48;
+        }
       }
 
-      material.envMapIntensity = 1.3;
+      material.envMapIntensity = 1.35;
       child.material = material;
       applyEnvironmentTint(child.material);
     });
@@ -1987,7 +2036,7 @@
     spacing: 3.8,
     wave: 1,
     swirl: 0,
-    baseOffset: 3.8, // Hoops frame completely over/around the headphone with no clipping
+    baseOffset: 2.7, // Hoops frame cleanly around the headphone without cutting into UI
     lightIntensity: 45,
     lightWidth: 1.2,
     tintStrength: 1,
@@ -2007,7 +2056,7 @@
       },
     });
 
-    // Taste - slow, smooth dolly in; hoops pass completely over the headphones
+    // Taste - slow, smooth dolly in; hoops pass completely through and over the headphones
     tl.to(data, {
       camPosX: 0,
       camPosY: -0.2,
@@ -2027,7 +2076,7 @@
       spacing: 3.8,
       wave: 0,
       swirl: 0,
-      baseOffset: -3.8, // Smoothly glides completely through and over the headphones
+      baseOffset: -2.7, // Smoothly glides completely through and over the headphones
       lightIntensity: 35,
       lightWidth: 1.2,
       tintStrength: 1,
@@ -2061,7 +2110,7 @@
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 3.8, // Hoops return smoothly to framing the headphone
+      baseOffset: 2.7, // Hoops return smoothly to framing the headphone
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2093,7 +2142,7 @@
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 3.8,
+      baseOffset: 2.7,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2125,7 +2174,7 @@
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 3.8,
+      baseOffset: 2.7,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2157,7 +2206,7 @@
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 3.8,
+      baseOffset: 2.7,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2189,7 +2238,7 @@
       spacing: 4.2,
       wave: 0,
       swirl: 0,
-      baseOffset: 3.8,
+      baseOffset: 2.7,
       lightIntensity: 45,
       lightWidth: 1.5,
       tintStrength: 1.5,
@@ -2223,7 +2272,7 @@
       spacing: 3.4,
       wave: 0,
       swirl: 0.15,
-      baseOffset: 4.0, // Smooth expansion, never violent 20
+      baseOffset: 3.2,
       lightIntensity: 20,
       lightWidth: 2.2,
       tintStrength: 1.5,
@@ -2255,7 +2304,7 @@
       spacing: 3.6,
       wave: 0,
       swirl: 0.1,
-      baseOffset: 4.2,
+      baseOffset: 3.4,
       lightIntensity: 0,
       lightWidth: 2.5,
       spotIntensity: 0,
@@ -2301,7 +2350,7 @@
       spacing: 3.8,
       wave: 0,
       swirl: 0,
-      baseOffset: 3.8,
+      baseOffset: 2.7,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 1,
@@ -2360,7 +2409,7 @@
     tl.set(data, {
       camPosZ: 24,
       spacing: 4.5,
-      baseOffset: 3.8,
+      baseOffset: 2.7,
       wave: 0,
       swirl: 0,
       lightWidth: 2,
@@ -2558,7 +2607,7 @@
       can.rotation.z = canRotZ;
       can.scale.set(canScale, canScale, canScale);
 
-      // Hero spotlight at start (p0=0): active finish in center rotates slowly, flanked cleanly with NO cluster
+      // Hero spotlight at start (p0=0): active finish in center rotates slowly, prominent and framed cleanly
       const heroInfluence = clamp(1 - p0 * 2.0, 0, 1);
       if (heroInfluence > 0) {
         const distFromCenter = Math.abs(x);
@@ -2572,12 +2621,9 @@
           can.rotation.x = lerp(can.rotation.x, (-Math.PI / 180) * 6, heroInfluence);
           can.rotation.z = lerp(can.rotation.z, (Math.PI / 180) * 3, heroInfluence);
         } else {
-          // Side headphones stay cleanly spaced at non-overlapping positions
-          const sideX = (x > 0 ? 1 : -1) * (carousel.spacing * 1.5);
-          can.position.x = lerp(can.position.x, sideX, heroInfluence * 0.5);
-          can.position.z = lerp(can.position.z, -3.0, heroInfluence * 0.7);
-          can.scale.setScalar(lerp(canScale, 0.9, heroInfluence * 0.6));
-          can.rotation.y = lerp(can.rotation.y, (x > 0 ? -0.35 : 0.35) + time * 0.18, heroInfluence);
+          // Push side headphones out of viewport during hero mode to eliminate border clipping
+          can.position.z = lerp(can.position.z, -30.0, heroInfluence);
+          can.scale.setScalar(lerp(canScale, 0.001, heroInfluence));
         }
       }
 
@@ -3119,6 +3165,15 @@
           });
         }
       });
+
+      if (window.__assetsProgress && window.__assetsProgress > percentObj.value) {
+        gsap.to(percentObj, {
+          value: window.__assetsProgress,
+          duration: 0.2,
+          ease: 'power1.out',
+          onUpdate: updatePercent,
+        });
+      }
 
       if (loaderVideo) {
         loaderVideo.muted = true;
