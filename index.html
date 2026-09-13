@@ -1414,24 +1414,7 @@
   }
 
   .carousel_list.is-hero .carousel_slide {
-    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .carousel_list.is-hero .carousel_slide:not(.is-active) {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    transform: translateY(8px) scale(0.97);
-  }
-  .carousel_list.is-hero .carousel_slide.is-active {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    transform: translateY(0) scale(1);
-  }
-  .carousel_list.is-hero .carousel_slide.is-active [data-anim='chars-mask'] * {
-    transform: none !important;
-    opacity: 1 !important;
-    visibility: visible !important;
+    will-change: transform, opacity;
   }
 </style></div><div class="page-wrapper"><main class="main-wrapper"><div class="navbar"><div class="navbar_content"><div class="scroll_component"><div class="scroll_point"></div><div class="scroll_wrapper"><div class="scroll_indicator"><div class="scroll_indicator__core"></div><div class="scroll_indicator__mid"></div><div class="scroll_indicator__halo"></div><div class="scroll_indicator__hotspot"></div></div></div><div class="scroll_point"></div></div><div class="navbar_container"><div class="navbar_sound-wrapper"><div class="navbar_sound"><div>ON</div><div><div class="icon-embed-xsmall w-embed"><svg width="100%" height="100%" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="2" height="8" rx="1" fill="currentColor"/>
@@ -1446,7 +1429,7 @@
   <circle class="navbar_menu-circle-closed" fill="currentColor" cx="4" cy="4" r="1" />
 </svg></div></div><div class="text-block">MENU</div></div></div><div class="navbar_menu"><div class="navbar_link-list"><a href="#gamme" class="navbar_link">Finishes</a><a href="#benefits-1" class="navbar_link">Acoustics</a><a href="#order" class="navbar_link">Collection</a><a href="#FAQ" class="navbar_link">FAQ</a></div><div class="navbar_middle"><div class="margin-vertical margin-large"><div class="icon-embed-medium w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 51 47" fill="none">
   <path d="M49.9003 31.122C49.7341 31.1058 49.574 31.0848 49.4175 31.0611C50.4319 29.5394 49.0163 28.5669 47.509 29.0832C46.5532 29.4107 45.7554 29.4997 43.898 29.1631C43.1407 28.9368 42.2806 28.7499 41.2465 28.6454C40.2514 26.2763 38.7243 26.0892 32.8879 25.8267C30.9781 25.7407 28.4059 26.7957 26.9214 26.6022C23.705 26.1829 22.3156 25.9494 21.9591 25.8863C32.0691 15.5633 29.1212 9.63174 22.6767 7.47133C23.964 6.72316 25.413 5.73792 27.0258 4.46571C36.2674 -2.82489 27.3797 0.125863 18.8141 4.04808C17.2492 4.76481 16.1793 5.67204 15.5991 6.53819C15.4343 6.54315 15.2696 6.54949 15.1048 6.55776C13.6357 6.63054 11.6006 6.90814 9.49419 7.55072C9.5395 7.47794 9.58535 7.40462 9.63039 7.33184C15.6288 -2.32538 7.68402 3.83967 2.56163 10.5966C1.58075 11.8903 0.812421 13.6634 0.382122 15.2694C0.326653 15.4348 0.273655 15.6022 0.2256 15.7736C0.192922 15.8902 0.133883 16.2439 0.0847299 16.6847C0.018002 17.1418 -0.0100072 17.5616 0.00317359 17.9244C-0.00231841 18.4683 0.0449129 18.9604 0.197591 19.185C0.313197 19.2289 0.425509 19.2755 0.536173 19.3229C0.520795 20.2731 0.805007 21.4645 1.38029 22.5992C1.54698 22.9278 1.72794 23.2404 1.91741 23.534C2.08437 24.5154 2.83018 25.5265 3.24373 26.1109C5.17115 28.8337 9.15917 29.9981 16.6225 27.9871C14.1168 32.5701 15.6535 36.102 15.8641 36.1734C15.1567 36.7653 15.0804 37.6882 14.7341 38.2665C14.3878 38.8446 14.1654 38.6955 13.9603 38.9521C13.4655 39.5713 14.253 40.4212 15.6705 40.3081C15.9237 40.288 16.5808 40.1764 17.0729 40.1185C17.2794 41.5991 18.4522 41.9098 19.4454 40.9143C19.4553 40.9188 19.4685 40.9248 19.4828 40.9323C21.3745 42.8964 23.9978 44.2932 26.7932 45.0836C31.1571 46.3177 34.013 46.7533 36.5258 46.9407C43.1281 47.4334 43.261 44.8366 37.2107 39.837C36.5547 39.837 34.4331 39.1319 31.3763 37.7508C30.2359 37.2355 30.5684 37.2634 31.429 37.4919C37.1283 39.0053 38.6002 38.2324 39.5813 37.3235C44.9758 38.9025 45.0972 37.7996 46.6029 38.763C47.746 39.4944 48.9298 38.3652 47.7013 36.5538C47.04 35.5785 45.0547 34.9847 46.1893 33.9532C46.1893 33.9532 50.5428 35.0795 50.986 32.2269C51.0983 31.5038 50.5151 31.1816 49.9003 31.1218V31.122ZM10.5673 20.5289C10.6761 19.6013 11.3768 18.7611 12.168 18.7605C13.017 18.76 13.4742 19.708 13.1714 20.7412C12.9053 21.6487 12.152 22.2235 11.4966 22.1256C10.8771 22.0332 10.4707 21.3554 10.5673 20.5289ZM3.18414 21.2079C3.49252 21.8036 3.60236 22.425 3.42936 22.5956C3.25636 22.7663 2.86616 22.4214 2.55778 21.8257C2.2494 21.2299 2.13956 20.6086 2.31256 20.438C2.32629 20.4244 2.34167 20.4153 2.35787 20.4082C2.65087 20.6422 2.91366 20.8876 3.1468 21.1382C3.15943 21.1613 3.17206 21.1839 3.18442 21.2079H3.18414ZM1.21169 19.6495C1.39183 19.7471 1.56318 19.8497 1.72794 19.9558C1.64666 20.4346 1.8202 21.2134 2.21865 21.9922C2.77828 23.0866 3.56749 23.7636 3.98076 23.5045C4.17325 23.3837 4.24904 23.0797 4.21994 22.6802C4.94351 24.1614 4.67879 25.3195 3.73032 24.6524C3.17591 24.1826 2.52593 23.3727 1.97865 22.294C1.48245 21.3157 1.25535 20.3834 1.21169 19.6498V19.6495ZM11.4331 24.7061C8.58114 25.0025 6.67404 22.2031 9.71057 19.7185C9.60815 20.0107 9.53483 20.3145 9.49638 20.6232C9.29016 22.2874 10.1562 23.6522 11.4754 23.8383C12.8718 24.0352 14.4765 22.8776 15.043 21.0505C15.4989 19.5806 15.1455 18.1968 14.261 17.5115C18.3347 16.0534 18.3682 15.871 17.1833 19.0155C15.6496 23.0852 13.3246 24.5096 11.4329 24.7061H11.4331Z" fill="currentColor"/>
-</svg></div></div></div><div class="navbar_bottom"><div class="navbar_button"><a href="#order" class="button is-full w-inline-block"><div>Pre-Order Horizon Pro · $299</div></a></div><div class="navbar_socials-links"><a href="https://www.tiktok.com/@soundangels" target="_blank" class="button is-secondary">Tiktok</a><div class="text-size-tiny">© 2026 SOUNDANGELS</div><a href="https://www.instagram.com/soundangels" target="_blank" class="button is-secondary">Instagram</a></div></div></div></div><a href="#order" class="button is-small hide-tablet w-inline-block"><div>Pre-Order · $299</div></a></div></div></div><div class="navbar_overlay"></div></div><div class="loader"><div class="loader_ambient_glow"></div><div class="loader_brand-box"><div class="loader_emblem_wrapper"><div class="loader_emblem_ring loader_emblem_ring-1"></div><div class="loader_emblem_ring loader_emblem_ring-2"></div><div class="loader_emblem_ring loader_emblem_ring-3"></div><div class="loader_emblem_mark"><svg width="76" height="76" viewBox="0 0 36 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="loader_svg_emblem"><defs><linearGradient id="emblemGoldGrad" x1="0" y1="0" x2="36" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff5eb"/><stop offset="35%" stop-color="#e8a87c"/><stop offset="75%" stop-color="#c9805a"/><stop offset="100%" stop-color="#84482a"/></linearGradient><filter id="emblemGlowFilter" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#emblemGlowFilter)"><path d="M32 10 C22 16 16 24 16 32 C16 24 10 16 0 10 C6 22 10 30 16 34 C10 38 6 46 0 58 C10 52 16 44 16 36 C16 44 22 52 32 58 C26 46 22 38 16 34 C22 30 26 22 32 10 Z" fill="url(#emblemGoldGrad)" class="emblem_wings"/><path d="M16 18 C16 25 16 30 16 34 C16 38 16 43 16 50" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" class="emblem_spine"/></g></svg></div></div><h1 class="loader_brand_title">SOUNDANGELS</h1><div class="loader_brand_tagline">Precision Wireless Acoustics</div><div class="loader_progress_container"><div class="loader_progress_bar"><div class="loader_progress_fill"></div></div><div class="loader_counter">0%</div></div></div></div><section id="gamme" class="section is-gamme"><div class="gamme_container"><div class="hero_ambient_aura" id="heroAmbientAura"></div><div class="padding-global"><div class="container-large"><div class="padding-bottom padding-medium"><div class="max-width-medium align-center"><div class="gamme_gradient-wrapper"><div class="gamme_gradient-position"><div class="gamme_gradient"></div></div><div class="gamme_gradient-blur"></div></div><div><div class="w-embed"><h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">SoundAngels – Best Experience</h1></div><div class="carousel_title-collection w-dyn-list"><div role="list" class="carousel_list is-hero w-dyn-items"><div data-taste-secondary="#9089D3" data-taste-primary="#3D2B68" role="listitem" class="carousel_slide is-active w-dyn-item"><div class="carousel_title"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
+</svg></div></div></div><div class="navbar_bottom"><div class="navbar_button"><a href="#order" class="button is-full w-inline-block"><div>Pre-Order Horizon Pro · $299</div></a></div><div class="navbar_socials-links"><a href="https://www.tiktok.com/@soundangels" target="_blank" class="button is-secondary">Tiktok</a><div class="text-size-tiny">© 2026 SOUNDANGELS</div><a href="https://www.instagram.com/soundangels" target="_blank" class="button is-secondary">Instagram</a></div></div></div></div><a href="#order" class="button is-small hide-tablet w-inline-block"><div>Pre-Order · $299</div></a></div></div></div><div class="navbar_overlay"></div></div><div class="loader"><div class="loader_ambient_glow"></div><div class="loader_brand-box"><div class="loader_emblem_wrapper"><div class="loader_emblem_ring loader_emblem_ring-1"></div><div class="loader_emblem_ring loader_emblem_ring-2"></div><div class="loader_emblem_ring loader_emblem_ring-3"></div><div class="loader_emblem_mark"><svg width="76" height="76" viewBox="0 0 36 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="loader_svg_emblem"><defs><linearGradient id="emblemGoldGrad" x1="0" y1="0" x2="36" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff5eb"/><stop offset="35%" stop-color="#e8a87c"/><stop offset="75%" stop-color="#c9805a"/><stop offset="100%" stop-color="#84482a"/></linearGradient><filter id="emblemGlowFilter" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#emblemGlowFilter)"><path d="M32 10 C22 16 16 24 16 32 C16 24 10 16 0 10 C6 22 10 30 16 34 C10 38 6 46 0 58 C10 52 16 44 16 36 C16 44 22 52 32 58 C26 46 22 38 16 34 C22 30 26 22 32 10 Z" fill="url(#emblemGoldGrad)" class="emblem_wings"/><path d="M16 18 C16 25 16 30 16 34 C16 38 16 43 16 50" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" class="emblem_spine"/></g></svg></div></div><h1 class="loader_brand_title loader_title">SOUNDANGELS</h1><div class="loader_brand_tagline loader_subtitle">Precision Wireless Acoustics</div><div class="loader_progress_container loader_bar-track"><div class="loader_progress_bar"><div class="loader_progress_fill loader_bar-fill"></div></div><div class="loader_counter loader_percent">0%</div></div></div></div><section id="gamme" class="section is-gamme"><div class="gamme_container"><div class="hero_ambient_aura" id="heroAmbientAura"></div><div class="padding-global"><div class="container-large"><div class="padding-bottom padding-medium"><div class="max-width-medium align-center"><div class="gamme_gradient-wrapper"><div class="gamme_gradient-position"><div class="gamme_gradient"></div></div><div class="gamme_gradient-blur"></div></div><div><div class="w-embed"><h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">SoundAngels – Best Experience</h1></div><div class="carousel_title-collection w-dyn-list"><div role="list" class="carousel_list is-hero w-dyn-items"><div data-taste-secondary="#9089D3" data-taste-primary="#3D2B68" role="listitem" class="carousel_slide is-active w-dyn-item"><div class="carousel_title"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
   <span data-anim="chars-mask">Obsidian</span>
   <span data-anim="chars-mask">Black</span>
 </div></div></div><div class="margin-top margin-small hide"><p>Deep matte stealth finish engineered for studio purity, active noise isolation, and zero distractions.</p></div></div><div data-taste-secondary="#00A6E2" data-taste-primary="#27326B" role="listitem" class="carousel_slide w-dyn-item"><div class="carousel_title"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
@@ -1821,9 +1804,7 @@
 
   const wrap = (value, min, max) => {
     const size = max - min;
-    value = value % size;
-    if (value < 0) value += size;
-    return value + min;
+    return ((((value - min) % size) + size) % size) + min;
   };
 
   const clamp = (value, min, max) => {
@@ -2077,16 +2058,22 @@
   };
 
   carousel.goTo = (index) => {
-    const target = index * carousel.spacing - carousel.offset;
-    carousel.target = target;
+    const count = canLabels.length;
+    const currentTargetIndex = Math.round((carousel.target + carousel.offset) / carousel.spacing);
+    let diff = ((index - currentTargetIndex) % count + count) % count;
+    if (diff > count / 2) diff -= count;
+    const resolvedIndex = currentTargetIndex + diff;
+    carousel.target = resolvedIndex * carousel.spacing - carousel.offset;
   };
 
   carousel.previous = () => {
-    carousel.goTo(carousel.getIndex(false) - 1);
+    const currentTargetIndex = Math.round((carousel.target + carousel.offset) / carousel.spacing);
+    carousel.goTo(currentTargetIndex - 1);
   };
 
   carousel.next = () => {
-    carousel.goTo(carousel.getIndex(false) + 1);
+    const currentTargetIndex = Math.round((carousel.target + carousel.offset) / carousel.spacing);
+    carousel.goTo(currentTargetIndex + 1);
   };
 
   carousel.changed = signal();
@@ -2310,7 +2297,7 @@
   // Hoops: 2 large procedural resonance rings that pass completely over/around
   // the headphones without penetrating or clipping through the geometry or UI.
   const base = new THREE.Group();
-  const ringGeometry = new THREE.TorusGeometry(3.55, 0.038, 24, 128);
+  const ringGeometry = new THREE.TorusGeometry(4.15, 0.042, 24, 128);
   const hoopMaterial = makeMaterial({
     color: 0xf8fafc,
     metalness: 0.95,
@@ -2614,7 +2601,7 @@
     spacing: 3.8,
     wave: 1,
     swirl: 0,
-    baseOffset: 2.85, // Hoops frame completely around headphone with zero penetration
+    baseOffset: 3.45, // Hoops frame completely around headphone with zero penetration
     lightIntensity: 45,
     lightWidth: 1.2,
     tintStrength: 1,
@@ -2634,27 +2621,27 @@
       },
     });
 
-    // Taste - slow, smooth dolly in; hoops frame cleanly around the headphones
+    // Taste - smooth 3/4 showcase angle
     tl.to(data, {
       camPosX: 0,
       camPosY: -0.2,
       camPosZ: 15,
-      camRotX: 0,
-      camRotY: 0,
+      camRotX: (Math.PI / 180) * -3,
+      camRotY: (Math.PI / 180) * 4,
       camRotZ: 0,
       fov: 24,
       canScale: 1.15,
       canPosX: 0,
       canPosY: -0.2,
       canPosZ: 0,
-      canRotX: 0,
-      canRotY: 0,
-      canRotZ: 0,
+      canRotX: (Math.PI / 180) * -8,
+      canRotY: (Math.PI / 180) * 18,
+      canRotZ: (Math.PI / 180) * 5,
       canSpin: 0,
       spacing: 3.8,
       wave: 0,
       swirl: 0,
-      baseOffset: 2.85,
+      baseOffset: 3.45,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 1,
@@ -2673,7 +2660,7 @@
       camPosX: 0,
       camPosY: -0.8,
       camPosZ: 15,
-      camRotX: 0,
+      camRotX: (Math.PI / 180) * 4,
       camRotY: 0,
       camRotZ: 0,
       fov: 22,
@@ -2681,14 +2668,14 @@
       canPosX: 0,
       canPosY: -0.3,
       canPosZ: 0,
-      canRotX: 0,
-      canRotY: 0,
-      canRotZ: 0,
+      canRotX: (Math.PI / 180) * 5,
+      canRotY: (Math.PI / 180) * 36,
+      canRotZ: (Math.PI / 180) * -3,
       canSpin: 0,
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 2.85,
+      baseOffset: 3.45,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2705,7 +2692,7 @@
       camPosX: 0,
       camPosY: -0.8,
       camPosZ: 15,
-      camRotX: 0,
+      camRotX: (Math.PI / 180) * 4,
       camRotY: 0,
       camRotZ: 0,
       fov: 22,
@@ -2713,14 +2700,14 @@
       canPosX: 0,
       canPosY: -0.2,
       canPosZ: 0,
-      canRotX: 0,
-      canRotY: 0,
-      canRotZ: 0,
+      canRotX: (Math.PI / 180) * 4,
+      canRotY: (Math.PI / 180) * -28,
+      canRotZ: (Math.PI / 180) * 3,
       canSpin: 0,
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 2.85,
+      baseOffset: 3.45,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2737,7 +2724,7 @@
       camPosX: 0,
       camPosY: -0.8,
       camPosZ: 15,
-      camRotX: 0,
+      camRotX: (Math.PI / 180) * 4,
       camRotY: 0,
       camRotZ: 0,
       fov: 22,
@@ -2745,14 +2732,14 @@
       canPosX: 0,
       canPosY: 0,
       canPosZ: 0,
-      canRotX: 0,
-      canRotY: 0,
-      canRotZ: 0,
+      canRotX: (Math.PI / 180) * -6,
+      canRotY: (Math.PI / 180) * 30,
+      canRotZ: (Math.PI / 180) * -2,
       canSpin: 0,
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 2.85,
+      baseOffset: 3.45,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2769,7 +2756,7 @@
       camPosX: 0,
       camPosY: -0.8,
       camPosZ: 15,
-      camRotX: 0,
+      camRotX: (Math.PI / 180) * 4,
       camRotY: 0,
       camRotZ: 0,
       fov: 22,
@@ -2777,14 +2764,14 @@
       canPosX: 0,
       canPosY: 0.15,
       canPosZ: 0,
-      canRotX: 0,
-      canRotY: 0,
-      canRotZ: 0,
+      canRotX: (Math.PI / 180) * 5,
+      canRotY: (Math.PI / 180) * -22,
+      canRotZ: (Math.PI / 180) * 2,
       canSpin: 0,
       spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 2.85,
+      baseOffset: 3.45,
       lightIntensity: 45,
       lightWidth: 1.2,
       tintStrength: 0.8,
@@ -2816,7 +2803,7 @@
       spacing: 4.2,
       wave: 0,
       swirl: 0,
-      baseOffset: 2.85,
+      baseOffset: 3.45,
       lightIntensity: 45,
       lightWidth: 1.5,
       tintStrength: 1.5,
@@ -3129,7 +3116,8 @@
 
     if (!animation.paused) {
       if (!swipe.holding) carousel.target = carousel.getRounded(carousel.target);
-      carousel.position = lerp(carousel.position, carousel.target, delta * 3.5);
+      const lerpSpeed = Math.min(delta * 8.0, 0.35);
+      carousel.position = lerp(carousel.position, carousel.target, lerpSpeed);
     }
 
     camera.fov = data.fov;
@@ -3176,42 +3164,81 @@
       canRotY = lerp(canRotY, data.canRotY, p1);
       canRotZ = lerp(canRotZ, data.canRotZ, p1);
 
-      // Apply
+      // Continuous smooth hero carousel function based on normalized distance u = x / carousel.spacing
+      const u = x / carousel.spacing;
+      const absU = Math.abs(u);
+      const isCenter = absU < 0.5;
+
+      // In single-product showcase sections (Taste through No Bullshit, when data.swirl < 0.05):
+      // Keep side headphones smoothly off-screen so only the featured center headphone is visible
+      const swirlFactor = clamp(data.swirl * 5, 0, 1);
+      if (swirlFactor < 1 && !isCenter) {
+        const offscreenX = (x > 0 ? 1 : -1) * 25;
+        canPosX = lerp(offscreenX, canPosX, swirlFactor);
+      }
+
+      // Apply base transforms from scroll timeline
       can.position.x = canPosX;
       can.position.y = canPosY;
       can.position.z = canPosZ;
       can.rotation.x = canRotX;
+      can.rotation.y = canRotY;
       can.rotation.z = canRotZ;
       can.scale.set(canScale, canScale, canScale);
 
-      // Rotation handling: only the middle headphone rotates slowly and continuously
-      const distFromCenter = Math.abs(x);
-      const isMiddle = distFromCenter < carousel.spacing * 0.5;
-      if (isMiddle) {
-        const safeDelta = Math.min(Math.max(delta, 0), 0.05);
-        const activeSpin = 1 - clamp(data.swirl * 4, 0, 1);
-        can.userData.rotY = (can.userData.rotY || 0) + safeDelta * 0.09 * activeSpin;
-        can.rotation.y = canRotY + can.userData.rotY * activeSpin;
-      } else {
-        can.userData.rotY = 0;
-        can.rotation.y = canRotY;
-      }
-
-      // Hero spotlight at start (p0=0): active finish in center stays prominent and cleanly framed
-      const heroInfluence = clamp(1 - p0, 0, 1);
+      // Hero 3D revolving carousel: perfect symmetrical 2, 1 trio (1 center front, 2 flanking in back)
+      const heroInfluence = clamp(1 - p0 * 2.0, 0, 1);
       if (heroInfluence > 0) {
-        if (isMiddle) {
-          can.position.x = lerp(can.position.x, 0, heroInfluence);
-          can.position.y = lerp(can.position.y, 0, heroInfluence);
-          can.position.z = lerp(can.position.z, 0.2, heroInfluence);
-          can.scale.setScalar(lerp(canScale, 1.25, heroInfluence));
-          can.rotation.x = lerp(can.rotation.x, (-Math.PI / 180) * 3, heroInfluence);
-          can.rotation.z = lerp(can.rotation.z, 0, heroInfluence);
+        let hPosX, hPosY, hPosZ, hScale, hRotX, hRotY, hRotZ;
+
+        const absU = Math.abs(u);
+        const sideSign = u >= 0 ? 1 : -1;
+
+        if (absU <= 1.0) {
+          // Perfect symmetrical 2, 1 arrangement: center (u=0) in front; flanking two (|u|=1) in back
+          const t = absU;
+          const smoothT = t * t * (3 - 2 * t);
+          hPosX = sideSign * 6.8 * smoothT;
+          hPosY = 0;
+          hPosZ = lerp(0.2, -5.2, smoothT);
+          hScale = lerp(1.25, 0.82, smoothT);
+
+          // Center rotates slowly; flanking two are symmetrically angled inward along orbit
+          const centerRotY = time * 0.18;
+          const flankRotY = -sideSign * (Math.PI / 180) * 26;
+          hRotY = lerp(centerRotY, flankRotY, smoothT);
+          hRotX = (-Math.PI / 180) * 5;
+          hRotZ = sideSign * (Math.PI / 180) * 2.5 * smoothT;
+        } else if (absU < 1.3) {
+          // Smoothly entering / exiting the rear orbit during transition without phantom specks
+          const extra = (absU - 1.0) / 0.3;
+          const fade = 1.0 - extra;
+          hPosX = sideSign * (6.8 + extra * 5.0);
+          hPosY = 0;
+          hPosZ = lerp(-5.2, -20.0, extra);
+          hScale = 0.82 * Math.max(fade, 0);
+          hRotY = -sideSign * (Math.PI / 180) * 26;
+          hRotX = (-Math.PI / 180) * 5;
+          hRotZ = sideSign * (Math.PI / 180) * 2.5;
         } else {
-          // Push side headphones out of viewport during hero mode to eliminate border clipping
-          can.position.z = lerp(can.position.z, -30.0, heroInfluence);
-          can.scale.setScalar(lerp(canScale, 0.001, heroInfluence));
+          // Completely hidden beyond visible 2,1 arrangement (zero tiny specks in background)
+          hPosX = sideSign * 25.0;
+          hPosY = 0;
+          hPosZ = -100.0;
+          hScale = 0;
+          hRotY = 0;
+          hRotX = 0;
+          hRotZ = 0;
         }
+
+        can.position.x = lerp(can.position.x, hPosX, heroInfluence);
+        can.position.y = lerp(can.position.y, hPosY, heroInfluence);
+        can.position.z = lerp(can.position.z, hPosZ, heroInfluence);
+        const blendedScale = lerp(canScale, hScale, heroInfluence);
+        can.scale.set(blendedScale, blendedScale, blendedScale);
+        can.rotation.x = lerp(can.rotation.x, hRotX, heroInfluence);
+        can.rotation.y = lerp(can.rotation.y, hRotY, heroInfluence);
+        can.rotation.z = lerp(can.rotation.z, hRotZ, heroInfluence);
       }
 
       // Mouse interaction (smooth and gentle)
@@ -4223,6 +4250,21 @@
 
         slideReveals[previous]?.out();
         slideReveals[index]?.in({ delay: 0.3 });
+
+        // Synchronize swatch dock pills with arrow navigation
+        document.querySelectorAll('.hero_swatch_pill').forEach((pill, i) => {
+          pill.classList.toggle('is-active', i === index);
+        });
+
+        const HERO_AURA_COLORS = [
+          'rgba(144, 137, 211, 0.35)',
+          'rgba(0, 166, 226, 0.32)',
+          'rgba(219, 148, 128, 0.38)',
+          'rgba(238, 177, 105, 0.32)',
+          'rgba(74, 144, 226, 0.36)',
+          'rgba(255, 101, 157, 0.30)'
+        ];
+        document.documentElement.style.setProperty('--hero-aura-color', HERO_AURA_COLORS[index] || HERO_AURA_COLORS[0]);
       });
 
       slideReveals[window.carousel.index]?.in({ delay: 0.3 });
@@ -5057,37 +5099,12 @@
     };
 
     window.selectHeroFinish = (idx) => {
-      if (window.carousel) {
-        if (typeof window.carousel.goTo === 'function') {
-          window.carousel.goTo(idx);
-        }
-        if (typeof window.carousel.spacing === 'number') {
-          const target = idx * window.carousel.spacing - window.carousel.offset;
-          window.carousel.target = target;
-          window.carousel.position = target;
-        }
-        const prev = window.carousel.lastIndex;
-        window.carousel.lastIndex = idx;
-        window.carousel.index = idx;
-        if (window.carousel.changed && typeof window.carousel.changed.emit === 'function') {
-          window.carousel.changed.emit({ index: idx, previous: prev });
-        }
+      if (window.carousel && typeof window.carousel.goTo === 'function') {
+        window.carousel.goTo(idx);
       }
       document.querySelectorAll('.hero_swatch_pill').forEach((pill, i) => {
         pill.classList.toggle('is-active', i === idx);
       });
-      document.querySelectorAll('.carousel_list.is-hero .carousel_slide').forEach((slide, i) => {
-        slide.classList.toggle('is-active', i === idx);
-      });
-      const HERO_AURA_COLORS = [
-        'rgba(144, 137, 211, 0.35)',
-        'rgba(0, 166, 226, 0.32)',
-        'rgba(219, 148, 128, 0.38)',
-        'rgba(238, 177, 105, 0.32)',
-        'rgba(74, 144, 226, 0.36)',
-        'rgba(255, 101, 157, 0.30)'
-      ];
-      document.documentElement.style.setProperty('--hero-aura-color', HERO_AURA_COLORS[idx] || HERO_AURA_COLORS[0]);
     };
 
     window.selectFinishAndScroll = (idx) => {
