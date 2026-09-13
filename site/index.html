@@ -119,7 +119,13 @@
     overflow: hidden;
   }
 </style>
+<script src="https://cdn.prod.website-files.com/gsap/3.15.0/gsap.min.js" type="text/javascript"></script>
+<script src="https://cdn.prod.website-files.com/gsap/3.15.0/ScrollTrigger.min.js" type="text/javascript"></script>
+<script src="https://cdn.prod.website-files.com/gsap/3.15.0/SplitText.min.js" type="text/javascript"></script>
 <script>
+  if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+  }
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
@@ -216,13 +222,29 @@
     position: fixed;
     inset: 0;
     z-index: 99999;
-    background: radial-gradient(circle at 50% 50%, #161226 0%, #08070d 100%);
+    background: radial-gradient(circle at 50% 48%, #14151b 0%, #06070a 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     pointer-events: all;
     overflow: hidden;
+  }
+
+  .loader_ambient_glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201, 128, 90, 0.16) 0%, rgba(201, 128, 90, 0) 70%);
+    filter: blur(40px);
+    pointer-events: none;
+    animation: loaderAuraBreath 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes loaderAuraBreath {
+    0% { transform: scale(0.85); opacity: 0.6; }
+    100% { transform: scale(1.2); opacity: 1; }
   }
 
   .loader_brand-box {
@@ -232,70 +254,126 @@
     justify-content: center;
     text-align: center;
     position: relative;
+    z-index: 2;
     width: 100%;
     padding: 0 2vw;
   }
 
-  .loader_title {
-    font-family: inherit;
-    font-weight: 900;
-    font-size: clamp(3.5rem, 15vw, 14rem);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin: 0;
-    line-height: 1;
+  .loader_emblem_wrapper {
     position: relative;
-    /* Liquid green fill from left to right as loading progresses */
-    background: linear-gradient(
-      90deg,
-      #00e676 0%,
-      #00ff88 var(--load-progress, 0%),
-      rgba(255, 255, 255, 0.12) var(--load-progress, 0%),
-      rgba(255, 255, 255, 0.12) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 32px rgba(0, 255, 136, 0.35));
-    white-space: nowrap;
+    width: 130px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.75rem;
   }
 
-  .loader_subtitle {
-    margin-top: 1.5rem;
-    font-size: clamp(0.65rem, 1.1vw, 0.9rem);
-    letter-spacing: 0.4em;
+  .loader_emblem_ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 128, 90, 0.3);
+    pointer-events: none;
+    animation: emblemPulseRing 3.2s cubic-bezier(0.1, 0.8, 0.2, 1) infinite;
+  }
+  .loader_emblem_ring-1 { animation-delay: 0s; }
+  .loader_emblem_ring-2 { animation-delay: 1.05s; }
+  .loader_emblem_ring-3 { animation-delay: 2.1s; }
+
+  @keyframes emblemPulseRing {
+    0% {
+      transform: scale(0.7);
+      opacity: 0.85;
+      border-color: rgba(243, 207, 176, 0.6);
+    }
+    60% {
+      border-color: rgba(201, 128, 90, 0.25);
+    }
+    100% {
+      transform: scale(1.75);
+      opacity: 0;
+      border-color: rgba(201, 128, 90, 0);
+    }
+  }
+
+  .loader_emblem_mark {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 28px rgba(201, 128, 90, 0.5));
+    animation: emblemFloatBreath 2.8s ease-in-out infinite;
+  }
+
+  @keyframes emblemFloatBreath {
+    0%, 100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 22px rgba(201, 128, 90, 0.45));
+    }
+    50% {
+      transform: scale(1.04);
+      filter: drop-shadow(0 0 38px rgba(243, 207, 176, 0.75));
+    }
+  }
+
+  .loader_brand_title {
+    font-family: inherit;
+    font-size: clamp(1.6rem, 3.8vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.1;
+    text-indent: 0.32em;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+  }
+
+  .loader_brand_tagline {
+    margin-top: 0.6rem;
+    font-size: clamp(0.66rem, 1vw, 0.8rem);
+    font-weight: 500;
+    letter-spacing: 0.38em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.45);
-    font-weight: 600;
+    text-indent: 0.38em;
+  }
+
+  .loader_progress_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 2.25rem;
   }
 
   .loader_bar-track {
-    width: min(340px, 55vw);
+    width: min(260px, 55vw);
     height: 2px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 999px;
-    margin-top: 2rem;
     overflow: hidden;
     position: relative;
   }
 
   .loader_bar-fill {
-    width: var(--load-progress, 0%);
+    width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #10b981, #00ff88);
-    box-shadow: 0 0 10px #00ff88;
+    background: linear-gradient(90deg, #c9805a, #f5d6be);
+    box-shadow: 0 0 10px rgba(201, 128, 90, 0.8);
     border-radius: 999px;
-    transition: width 0.1s linear;
+    transition: width 0.12s linear;
   }
 
   .loader_percent {
-    margin-top: 1rem;
-    font-family: inherit;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    color: #00ff88;
-    text-shadow: 0 0 12px rgba(0, 255, 136, 0.6);
+    font-family: monospace, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.7);
+    text-indent: 0.18em;
   }
 
   /* Headphone company pitching typography */
@@ -1226,6 +1304,144 @@
     border-color: #fff;
     background: rgba(255, 255, 255, 0.08);
   }
+
+  :root {
+    --hero-aura-color: rgba(144, 137, 211, 0.35);
+  }
+
+  .hero_ambient_aura {
+    position: fixed;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(720px, 85vw);
+    height: min(720px, 85vw);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--hero-aura-color) 0%, rgba(0, 0, 0, 0) 70%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    transition: background 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+    opacity: 0.85;
+    will-change: background, opacity;
+  }
+
+  .hero_swatch_dock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 35;
+    pointer-events: auto !important;
+  }
+  .hero_swatch_group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(14, 15, 20, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 999px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .hero_swatch_pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px 5px 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    pointer-events: auto !important;
+  }
+  .hero_swatch_pill:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+  .hero_swatch_pill.is-active {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  .hero_swatch_circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  }
+  .hero_swatch_pill.is-active .hero_swatch_circle {
+    transform: scale(1.15);
+    border-color: #fff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4), 0 0 12px rgba(255, 255, 255, 0.6);
+  }
+
+  .hero_drag_cue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 0.75rem;
+    pointer-events: none;
+    z-index: 35;
+    transition: opacity 0.3s ease;
+  }
+  .hero_drag_cue svg {
+    animation: rotateSlow 8s linear infinite;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  @keyframes rotateSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @media screen and (max-width: 991px) {
+    .hero_swatch_pill .hero_swatch_name {
+      display: none;
+    }
+    .hero_swatch_pill {
+      padding: 4px;
+    }
+  }
+
+  .carousel_list.is-hero .carousel_slide {
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .carousel_list.is-hero .carousel_slide:not(.is-active) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(8px) scale(0.97);
+  }
+  .carousel_list.is-hero .carousel_slide.is-active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateY(0) scale(1);
+  }
+  .carousel_list.is-hero .carousel_slide.is-active [data-anim='chars-mask'] * {
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 </style></div><div class="page-wrapper"><main class="main-wrapper"><div class="navbar"><div class="navbar_content"><div class="scroll_component"><div class="scroll_point"></div><div class="scroll_wrapper"><div class="scroll_indicator"><div class="scroll_indicator__core"></div><div class="scroll_indicator__mid"></div><div class="scroll_indicator__halo"></div><div class="scroll_indicator__hotspot"></div></div></div><div class="scroll_point"></div></div><div class="navbar_container"><div class="navbar_sound-wrapper"><div class="navbar_sound"><div>ON</div><div><div class="icon-embed-xsmall w-embed"><svg width="100%" height="100%" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="2" height="8" rx="1" fill="currentColor"/>
   <rect x="4" width="2" height="8" rx="1" fill="currentColor"/>
@@ -1239,7 +1455,7 @@
   <circle class="navbar_menu-circle-closed" fill="currentColor" cx="4" cy="4" r="1" />
 </svg></div></div><div class="text-block">MENU</div></div></div><div class="navbar_menu"><div class="navbar_link-list"><a href="#gamme" class="navbar_link">Finishes</a><a href="#benefits-1" class="navbar_link">Acoustics</a><a href="#order" class="navbar_link">Collection</a><a href="#FAQ" class="navbar_link">FAQ</a></div><div class="navbar_middle"><div class="margin-vertical margin-large"><div class="icon-embed-medium w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 51 47" fill="none">
   <path d="M49.9003 31.122C49.7341 31.1058 49.574 31.0848 49.4175 31.0611C50.4319 29.5394 49.0163 28.5669 47.509 29.0832C46.5532 29.4107 45.7554 29.4997 43.898 29.1631C43.1407 28.9368 42.2806 28.7499 41.2465 28.6454C40.2514 26.2763 38.7243 26.0892 32.8879 25.8267C30.9781 25.7407 28.4059 26.7957 26.9214 26.6022C23.705 26.1829 22.3156 25.9494 21.9591 25.8863C32.0691 15.5633 29.1212 9.63174 22.6767 7.47133C23.964 6.72316 25.413 5.73792 27.0258 4.46571C36.2674 -2.82489 27.3797 0.125863 18.8141 4.04808C17.2492 4.76481 16.1793 5.67204 15.5991 6.53819C15.4343 6.54315 15.2696 6.54949 15.1048 6.55776C13.6357 6.63054 11.6006 6.90814 9.49419 7.55072C9.5395 7.47794 9.58535 7.40462 9.63039 7.33184C15.6288 -2.32538 7.68402 3.83967 2.56163 10.5966C1.58075 11.8903 0.812421 13.6634 0.382122 15.2694C0.326653 15.4348 0.273655 15.6022 0.2256 15.7736C0.192922 15.8902 0.133883 16.2439 0.0847299 16.6847C0.018002 17.1418 -0.0100072 17.5616 0.00317359 17.9244C-0.00231841 18.4683 0.0449129 18.9604 0.197591 19.185C0.313197 19.2289 0.425509 19.2755 0.536173 19.3229C0.520795 20.2731 0.805007 21.4645 1.38029 22.5992C1.54698 22.9278 1.72794 23.2404 1.91741 23.534C2.08437 24.5154 2.83018 25.5265 3.24373 26.1109C5.17115 28.8337 9.15917 29.9981 16.6225 27.9871C14.1168 32.5701 15.6535 36.102 15.8641 36.1734C15.1567 36.7653 15.0804 37.6882 14.7341 38.2665C14.3878 38.8446 14.1654 38.6955 13.9603 38.9521C13.4655 39.5713 14.253 40.4212 15.6705 40.3081C15.9237 40.288 16.5808 40.1764 17.0729 40.1185C17.2794 41.5991 18.4522 41.9098 19.4454 40.9143C19.4553 40.9188 19.4685 40.9248 19.4828 40.9323C21.3745 42.8964 23.9978 44.2932 26.7932 45.0836C31.1571 46.3177 34.013 46.7533 36.5258 46.9407C43.1281 47.4334 43.261 44.8366 37.2107 39.837C36.5547 39.837 34.4331 39.1319 31.3763 37.7508C30.2359 37.2355 30.5684 37.2634 31.429 37.4919C37.1283 39.0053 38.6002 38.2324 39.5813 37.3235C44.9758 38.9025 45.0972 37.7996 46.6029 38.763C47.746 39.4944 48.9298 38.3652 47.7013 36.5538C47.04 35.5785 45.0547 34.9847 46.1893 33.9532C46.1893 33.9532 50.5428 35.0795 50.986 32.2269C51.0983 31.5038 50.5151 31.1816 49.9003 31.1218V31.122ZM10.5673 20.5289C10.6761 19.6013 11.3768 18.7611 12.168 18.7605C13.017 18.76 13.4742 19.708 13.1714 20.7412C12.9053 21.6487 12.152 22.2235 11.4966 22.1256C10.8771 22.0332 10.4707 21.3554 10.5673 20.5289ZM3.18414 21.2079C3.49252 21.8036 3.60236 22.425 3.42936 22.5956C3.25636 22.7663 2.86616 22.4214 2.55778 21.8257C2.2494 21.2299 2.13956 20.6086 2.31256 20.438C2.32629 20.4244 2.34167 20.4153 2.35787 20.4082C2.65087 20.6422 2.91366 20.8876 3.1468 21.1382C3.15943 21.1613 3.17206 21.1839 3.18442 21.2079H3.18414ZM1.21169 19.6495C1.39183 19.7471 1.56318 19.8497 1.72794 19.9558C1.64666 20.4346 1.8202 21.2134 2.21865 21.9922C2.77828 23.0866 3.56749 23.7636 3.98076 23.5045C4.17325 23.3837 4.24904 23.0797 4.21994 22.6802C4.94351 24.1614 4.67879 25.3195 3.73032 24.6524C3.17591 24.1826 2.52593 23.3727 1.97865 22.294C1.48245 21.3157 1.25535 20.3834 1.21169 19.6498V19.6495ZM11.4331 24.7061C8.58114 25.0025 6.67404 22.2031 9.71057 19.7185C9.60815 20.0107 9.53483 20.3145 9.49638 20.6232C9.29016 22.2874 10.1562 23.6522 11.4754 23.8383C12.8718 24.0352 14.4765 22.8776 15.043 21.0505C15.4989 19.5806 15.1455 18.1968 14.261 17.5115C18.3347 16.0534 18.3682 15.871 17.1833 19.0155C15.6496 23.0852 13.3246 24.5096 11.4329 24.7061H11.4331Z" fill="currentColor"/>
-</svg></div></div></div><div class="navbar_bottom"><div class="navbar_button"><a href="#order" class="button is-full w-inline-block"><div>Pre-Order Horizon Pro · $299</div></a></div><div class="navbar_socials-links"><a href="https://www.tiktok.com/@soundangels" target="_blank" class="button is-secondary">Tiktok</a><div class="text-size-tiny">© 2026 SOUNDANGELS</div><a href="https://www.instagram.com/soundangels" target="_blank" class="button is-secondary">Instagram</a></div></div></div></div><a href="#order" class="button is-small hide-tablet w-inline-block"><div>Pre-Order · $299</div></a></div></div></div><div class="navbar_overlay"></div></div><div class="loader"><div class="loader_brand-box"><h1 class="loader_title">SOUNDANGELS</h1><div class="loader_subtitle">Precision Wireless Acoustics</div><div class="loader_bar-track"><div class="loader_bar-fill"></div></div><div class="loader_percent">0%</div></div></div><section id="gamme" class="section is-gamme"><div class="gamme_container"><div class="padding-global"><div class="container-large"><div class="padding-bottom padding-medium"><div class="max-width-medium align-center"><div class="gamme_gradient-wrapper"><div class="gamme_gradient-position"><div class="gamme_gradient"></div></div><div class="gamme_gradient-blur"></div></div><div><div class="w-embed"><h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">SoundAngels – Best Experience</h1></div><div class="carousel_title-collection w-dyn-list"><div role="list" class="carousel_list is-hero w-dyn-items"><div data-taste-secondary="#9089D3" data-taste-primary="#3D2B68" role="listitem" class="carousel_slide w-dyn-item"><div class="carousel_title"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
+</svg></div></div></div><div class="navbar_bottom"><div class="navbar_button"><a href="#order" class="button is-full w-inline-block"><div>Pre-Order Horizon Pro · $299</div></a></div><div class="navbar_socials-links"><a href="https://www.tiktok.com/@soundangels" target="_blank" class="button is-secondary">Tiktok</a><div class="text-size-tiny">© 2026 SOUNDANGELS</div><a href="https://www.instagram.com/soundangels" target="_blank" class="button is-secondary">Instagram</a></div></div></div></div><a href="#order" class="button is-small hide-tablet w-inline-block"><div>Pre-Order · $299</div></a></div></div></div><div class="navbar_overlay"></div></div><div class="loader"><div class="loader_ambient_glow"></div><div class="loader_brand-box"><div class="loader_emblem_wrapper"><div class="loader_emblem_ring loader_emblem_ring-1"></div><div class="loader_emblem_ring loader_emblem_ring-2"></div><div class="loader_emblem_ring loader_emblem_ring-3"></div><div class="loader_emblem_mark"><svg width="76" height="76" viewBox="0 0 36 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="loader_svg_emblem"><defs><linearGradient id="emblemGoldGrad" x1="0" y1="0" x2="36" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fff5eb"/><stop offset="35%" stop-color="#e8a87c"/><stop offset="75%" stop-color="#c9805a"/><stop offset="100%" stop-color="#84482a"/></linearGradient><filter id="emblemGlowFilter" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#emblemGlowFilter)"><path d="M32 10 C22 16 16 24 16 32 C16 24 10 16 0 10 C6 22 10 30 16 34 C10 38 6 46 0 58 C10 52 16 44 16 36 C16 44 22 52 32 58 C26 46 22 38 16 34 C22 30 26 22 32 10 Z" fill="url(#emblemGoldGrad)" class="emblem_wings"/><path d="M16 18 C16 25 16 30 16 34 C16 38 16 43 16 50" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" class="emblem_spine"/></g></svg></div></div><h1 class="loader_brand_title">SOUNDANGELS</h1><div class="loader_brand_tagline">Precision Wireless Acoustics</div><div class="loader_progress_container"><div class="loader_bar-track"><div class="loader_bar-fill"></div></div><div class="loader_percent">0%</div></div></div></div><section id="gamme" class="section is-gamme"><div class="gamme_container"><div class="hero_ambient_aura" id="heroAmbientAura"></div><div class="padding-global"><div class="container-large"><div class="padding-bottom padding-medium"><div class="max-width-medium align-center"><div class="gamme_gradient-wrapper"><div class="gamme_gradient-position"><div class="gamme_gradient"></div></div><div class="gamme_gradient-blur"></div></div><div><div class="w-embed"><h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">SoundAngels – Best Experience</h1></div><div class="carousel_title-collection w-dyn-list"><div role="list" class="carousel_list is-hero w-dyn-items"><div data-taste-secondary="#9089D3" data-taste-primary="#3D2B68" role="listitem" class="carousel_slide is-active w-dyn-item"><div class="carousel_title"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
   <span data-anim="chars-mask">Obsidian</span>
   <span data-anim="chars-mask">Black</span>
 </div></div></div><div class="margin-top margin-small hide"><p>Deep matte stealth finish engineered for studio purity, active noise isolation, and zero distractions.</p></div></div><div data-taste-secondary="#00A6E2" data-taste-primary="#27326B" role="listitem" class="carousel_slide w-dyn-item"><div class="carousel_title"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
@@ -1257,7 +1473,7 @@
 </div></div></div><div class="margin-top margin-small hide"><p>Deep marine sapphire metallic with polished accents tuned for expansive panoramic spatial staging.</p></div></div><div data-taste-secondary="#FF659D" data-taste-primary="#800035" role="listitem" class="carousel_slide w-dyn-item"><div class="carousel_title"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
   <span data-anim="chars-mask">Matte</span>
   <span data-anim="chars-mask">Graphite</span>
-</div></div></div><div class="margin-top margin-small hide"><p>Anti-glare carbon graphite coating designed for silent commutes, pristine calls, and pure isolation.</p></div></div></div></div><div class="carousel_nav"><div class="carousel_arrow is-prev"><div class="icon-embed-custom w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 17 32" fill="none">
+</div></div></div><div class="margin-top margin-small hide"><p>Anti-glare carbon graphite coating designed for silent commutes, pristine calls, and pure isolation.</p></div></div></div></div><div class="hero_swatch_dock"><div class="hero_swatch_group"><button type="button" class="hero_swatch_pill is-active" data-finish="0" onclick="window.selectHeroFinish(0)" title="Obsidian Black"><span class="hero_swatch_circle" style="background: radial-gradient(circle at 35% 35%, #3a3a40, #141416);"></span><span class="hero_swatch_name">Obsidian</span></button><button type="button" class="hero_swatch_pill" data-finish="1" onclick="window.selectHeroFinish(1)" title="Arctic White"><span class="hero_swatch_circle" style="background: radial-gradient(circle at 35% 35%, #ffffff, #dcdde1);"></span><span class="hero_swatch_name">Arctic</span></button><button type="button" class="hero_swatch_pill" data-finish="2" onclick="window.selectHeroFinish(2)" title="Rose Copper"><span class="hero_swatch_circle" style="background: radial-gradient(circle at 35% 35%, #db9480, #9f5440);"></span><span class="hero_swatch_name">Rose</span></button><button type="button" class="hero_swatch_pill" data-finish="3" onclick="window.selectHeroFinish(3)" title="Steel Gray"><span class="hero_swatch_circle" style="background: radial-gradient(circle at 35% 35%, #9da3a6, #55595c);"></span><span class="hero_swatch_name">Steel</span></button><button type="button" class="hero_swatch_pill" data-finish="4" onclick="window.selectHeroFinish(4)" title="Ocean Blue"><span class="hero_swatch_circle" style="background: radial-gradient(circle at 35% 35%, #2a5288, #0f223d);"></span><span class="hero_swatch_name">Ocean</span></button><button type="button" class="hero_swatch_pill" data-finish="5" onclick="window.selectHeroFinish(5)" title="Matte Graphite"><span class="hero_swatch_circle" style="background: radial-gradient(circle at 35% 35%, #474d52, #1f2224);"></span><span class="hero_swatch_name">Graphite</span></button></div></div><div class="carousel_nav"><div class="carousel_arrow is-prev"><div class="icon-embed-custom w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 17 32" fill="none">
   <path d="M2.11495 13.4458C3.28298 13.4458 4.22986 14.3927 4.22986 15.5607C4.22986 16.7287 3.28298 17.6756 2.11495 17.6756C0.946913 17.6756 3.33786e-05 16.7287 3.33786e-05 15.5607C3.33786e-05 14.3927 0.946913 13.4458 2.11495 13.4458Z" fill="currentColor" />
   <path d="M8.04854 6.77686C9.21657 6.77686 10.1635 7.72373 10.1635 8.89177C10.1635 10.0598 9.21657 11.0067 8.04854 11.0067C6.88051 11.0067 5.93363 10.0598 5.93363 8.89177C5.93363 7.72373 6.88051 6.77686 8.04854 6.77686Z" fill="currentColor" fill-opacity="0.6" />
   <path d="M8.04854 20.1143C9.21657 20.1143 10.1635 21.0611 10.1635 22.2292C10.1635 23.3972 9.21657 24.3441 8.04854 24.3441C6.88051 24.3441 5.93363 23.3972 5.93363 22.2292C5.93363 21.0611 6.88051 20.1143 8.04854 20.1143Z" fill="currentColor" fill-opacity="0.6" />
@@ -1290,7 +1506,7 @@
     <rect class="carousel_pagination-bar" x="0" y="16" width="1000" height="8" rx="4" fill="url(#bar-gradient)" />
     <circle class="carousel_pagination-dot" cx="0" cy="20" r="18" fill="url(#bar-gradient)" />
   </g>
-</svg></div></div><div class="scroll_discover">Scroll to explore</div></div></div></div></div></div></div></section><section class="section is-profile"><div class="profile_container"><div class="padding-global height-100"><div class="container-large height-100"><div class="padding-section-medium height-100 position-relative"><div class="carousel_desc-collection w-dyn-list"><div role="list" class="carousel_list is-desc w-dyn-items"><div role="listitem" class="carousel_desc w-dyn-item"><div class="max-width-custom"><div class="margin-bottom margin-large hide-tablet"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
+</svg></div></div><div class="hero_drag_cue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg><span>Interactive 360° · Rotate or choose finish</span></div><div class="scroll_discover">Scroll to explore</div></div></div></div></div></div></div></section><section class="section is-profile"><div class="profile_container"><div class="padding-global height-100"><div class="container-large height-100"><div class="padding-section-medium height-100 position-relative"><div class="carousel_desc-collection w-dyn-list"><div role="list" class="carousel_list is-desc w-dyn-items"><div role="listitem" class="carousel_desc w-dyn-item"><div class="max-width-custom"><div class="margin-bottom margin-large hide-tablet"><div class="carousel_title-embed w-embed"><div class="heading-style-h2">
   <span data-anim="chars-mask">Obsidian</span>
   <span data-anim="chars-mask">Black</span>
 </div></div></div><div class="profile_desc"><div class="corner-left"><div class="icon-embed-xtiny w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 9 9" fill="none">
@@ -3460,8 +3676,6 @@
         const pct = Math.round(percentObj.value);
         const pctStr = `${pct}%`;
         if (loaderPercent) loaderPercent.textContent = pctStr;
-        // Drive the green liquid fill on title and progress bar
-        if (loaderTitle) loaderTitle.style.setProperty('--load-progress', pctStr);
         if (loaderBarFill) loaderBarFill.style.width = pctStr;
       };
       updatePercent();
@@ -3473,15 +3687,14 @@
         gsap.killTweensOf(percentObj);
         gsap.to(percentObj, {
           value: 100,
-          duration: 0.25,
+          duration: 0.35,
           ease: 'power2.out',
           onUpdate: updatePercent,
         });
-        gsap.to(loaderPercent, { autoAlpha: 0, duration: 0.25, ease: 'power2.in', delay: 0.15 });
 
         const tl = gsap.timeline({
-          defaults: { ease: 'power3.out' },
-          delay: 0.15,
+          defaults: { ease: 'power3.inOut' },
+          delay: 0.2,
           onComplete: () => {
             document.documentElement.style.overflow = '';
             document.body.style.overflow = '';
@@ -3491,24 +3704,67 @@
           },
         });
 
-        if (hud) tl.set(hud, { autoAlpha: 1 }, 0);
+        tl.to('.loader_progress_container', {
+          autoAlpha: 0,
+          y: 8,
+          duration: 0.3,
+          ease: 'power2.in',
+        }, 0);
+
+        tl.to('.loader_emblem_mark', {
+          scale: 1.25,
+          filter: 'drop-shadow(0 0 50px rgba(243, 207, 176, 0.95))',
+          duration: 0.5,
+          ease: 'power2.out',
+        }, 0.05);
+
+        tl.to('.loader_brand_title', {
+          letterSpacing: '0.45em',
+          duration: 0.55,
+          ease: 'power2.out',
+        }, 0.05);
+
+        tl.to('.loader_brand-box', {
+          autoAlpha: 0,
+          scale: 1.08,
+          filter: 'blur(10px)',
+          duration: 0.55,
+          ease: 'power2.in',
+        }, 0.3);
 
         tl.to(
           loaderWrapper,
           {
             autoAlpha: 0,
-            duration: 0.45,
-            ease: 'power2.in',
+            duration: 0.65,
+            ease: 'power2.inOut',
             onComplete: () => gsap.set(loaderWrapper, { display: 'none' }),
           },
-          0,
-        )
-          .to(canvas, { autoAlpha: 1, duration: 0.45, ease: 'power2.out' }, 0)
-          .to(document.body, { '--loader-reveal': '0vh', duration: 0.7, ease: 'power2.out' }, 0.1)
-          .fromTo(navbar, { autoAlpha: 0, yPercent: -120 }, { autoAlpha: 1, yPercent: 0, duration: 0.7 }, 0.2)
-          .fromTo(hudLeft, { autoAlpha: 0, x: '-10rem' }, { autoAlpha: 1, x: '0rem', duration: 0.7 }, 0.2)
-          .fromTo(hudRight, { autoAlpha: 0, x: '10rem' }, { autoAlpha: 1, x: '0rem', duration: 0.7 }, 0.2)
-          .fromTo(gammeContainer, { autoAlpha: 0 }, { autoAlpha: 1, yPercent: 0, duration: 0.8 }, 0.25);
+          0.4
+        );
+
+        tl.fromTo(
+          canvas,
+          { autoAlpha: 0, scale: 0.94 },
+          { autoAlpha: 1, scale: 1, duration: 0.85, ease: 'power2.out' },
+          0.35
+        );
+
+        tl.to(document.body, { '--loader-reveal': '0vh', duration: 0.7, ease: 'power2.out' }, 0.35);
+
+        tl.fromTo(
+          navbar,
+          { autoAlpha: 0, yPercent: -100 },
+          { autoAlpha: 1, yPercent: 0, duration: 0.8, ease: 'power3.out' },
+          0.4
+        );
+
+        if (hud) tl.set(hud, { autoAlpha: 1 }, 0.45);
+        tl.fromTo(hudLeft, { autoAlpha: 0, x: '-6rem' }, { autoAlpha: 1, x: '0rem', duration: 0.75, ease: 'power3.out' }, 0.45);
+        tl.fromTo(hudRight, { autoAlpha: 0, x: '6rem' }, { autoAlpha: 1, x: '0rem', duration: 0.75, ease: 'power3.out' }, 0.45);
+        tl.fromTo(gammeContainer, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.85, ease: 'power2.out' }, 0.45);
+        tl.fromTo('.hero_swatch_dock', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0.55);
+        tl.fromTo('.hero_drag_cue', { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.65);
 
         if (typeof window.loader?.play === 'function') {
           await window.loader.play();
@@ -4134,10 +4390,33 @@
         if (secondary) root.style.setProperty('--color-scheme-1--taste-secondary', secondary);
       };
 
+      const HERO_AURA_COLORS = [
+        'rgba(144, 137, 211, 0.35)',
+        'rgba(0, 166, 226, 0.32)',
+        'rgba(219, 148, 128, 0.38)',
+        'rgba(238, 177, 105, 0.32)',
+        'rgba(74, 144, 226, 0.36)',
+        'rgba(255, 101, 157, 0.30)'
+      ];
+
+      const updateHeroElements = (idx) => {
+        document.querySelectorAll('.hero_swatch_pill').forEach((pill, i) => {
+          pill.classList.toggle('is-active', i === idx);
+        });
+        document.querySelectorAll('.carousel_list.is-hero .carousel_slide').forEach((slide, i) => {
+          slide.classList.toggle('is-active', i === idx);
+        });
+        root.style.setProperty('--hero-aura-color', HERO_AURA_COLORS[idx] || HERO_AURA_COLORS[0]);
+      };
+
       applyColors(slides[window.carousel.index]);
+      updateHeroElements(window.carousel.index);
 
       const apply = debounce((index) => applyColors(slides[index]), 150);
-      window.carousel.changed.connect(({ index }) => apply(index));
+      window.carousel.changed.connect(({ index }) => {
+        apply(index);
+        updateHeroElements(index);
+      });
     };
 
     // Carousel Video
@@ -4153,50 +4432,46 @@
 
       const activate = (video) => {
         video.setAttribute('autoplay', '');
-        if (video.readyState === 0) video.load();
-
-        const tryPlay = () => video.play().catch(() => {});
-        if (video.readyState >= 2) tryPlay();
-        else video.addEventListener('canplay', tryPlay, { once: true });
+        video.setAttribute('loop', '');
+        video.muted = true;
+        video.currentTime = 0;
+        video.play();
       };
 
-      const deactivate = (video) => {
-        video.removeAttribute('autoplay');
+      const pause = (video) => {
         video.pause();
       };
 
-      const goTo = (i) => {
-        items.forEach(({ wrapper, video }, idx) => {
-          if (idx === i) {
-            if (inView) activate(video);
-            gsap.to(wrapper, { autoAlpha: 1, duration: 0.6, ease: 'power2.inOut', overwrite: true });
-          } else {
-            gsap.to(wrapper, {
-              autoAlpha: 0,
-              duration: 0.6,
-              ease: 'power2.inOut',
-              overwrite: true,
-              onComplete: () => deactivate(video),
-            });
-          }
+      const onChange = ({ index, previous }) => {
+        if (!inView) return;
+
+        items.forEach(({ video }, i) => {
+          if (i === index) activate(video);
+          else pause(video);
         });
       };
 
-      items.forEach(({ wrapper }) => gsap.set(wrapper, { autoAlpha: 0 }));
-
-      const apply = debounce((index) => {
-        if (inView) goTo(index);
-      }, 150);
-      window.carousel.changed.connect(({ index }) => apply(index));
+      window.carousel.changed.connect(onChange);
 
       ScrollTrigger.create({
         trigger: section,
         start: 'top bottom',
         end: 'bottom top',
-        onToggle: ({ isActive }) => {
-          inView = isActive;
-          if (isActive) goTo(window.carousel.index);
-          else items.forEach(({ video }) => deactivate(video));
+        onEnter: () => {
+          inView = true;
+          activate(items[window.carousel.index]?.video);
+        },
+        onLeave: () => {
+          inView = false;
+          pause(items[window.carousel.index]?.video);
+        },
+        onEnterBack: () => {
+          inView = true;
+          activate(items[window.carousel.index]?.video);
+        },
+        onLeaveBack: () => {
+          inView = false;
+          pause(items[window.carousel.index]?.video);
         },
       });
     };
@@ -4218,7 +4493,7 @@
         },
       });
 
-      tl.to('.carousel_pagination, .icon-scroll_wrapper, .carousel_arrow.is-prev, .scroll_discover, .gamme_gradient-wrapper', { autoAlpha: 0 });
+      tl.to('.carousel_pagination, .icon-scroll_wrapper, .carousel_arrow.is-prev, .scroll_discover, .gamme_gradient-wrapper, .hero_swatch_dock, .hero_drag_cue, .hero_ambient_aura', { autoAlpha: 0 });
 
       if (isDesktop()) {
         tl.to('.carousel_title-collection', { autoAlpha: 0 }, '<');
@@ -4789,11 +5064,43 @@
       }
     };
 
+    window.selectHeroFinish = (idx) => {
+      if (window.carousel) {
+        if (typeof window.carousel.goTo === 'function') {
+          window.carousel.goTo(idx);
+        }
+        if (typeof window.carousel.spacing === 'number') {
+          const target = idx * window.carousel.spacing - window.carousel.offset;
+          window.carousel.target = target;
+          window.carousel.position = target;
+        }
+        const prev = window.carousel.lastIndex;
+        window.carousel.lastIndex = idx;
+        window.carousel.index = idx;
+        if (window.carousel.changed && typeof window.carousel.changed.emit === 'function') {
+          window.carousel.changed.emit({ index: idx, previous: prev });
+        }
+      }
+      document.querySelectorAll('.hero_swatch_pill').forEach((pill, i) => {
+        pill.classList.toggle('is-active', i === idx);
+      });
+      document.querySelectorAll('.carousel_list.is-hero .carousel_slide').forEach((slide, i) => {
+        slide.classList.toggle('is-active', i === idx);
+      });
+      const HERO_AURA_COLORS = [
+        'rgba(144, 137, 211, 0.35)',
+        'rgba(0, 166, 226, 0.32)',
+        'rgba(219, 148, 128, 0.38)',
+        'rgba(238, 177, 105, 0.32)',
+        'rgba(74, 144, 226, 0.36)',
+        'rgba(255, 101, 157, 0.30)'
+      ];
+      document.documentElement.style.setProperty('--hero-aura-color', HERO_AURA_COLORS[idx] || HERO_AURA_COLORS[0]);
+    };
+
     window.selectFinishAndScroll = (idx) => {
       window.chooseFinish(idx);
-      if (window.carousel && typeof window.carousel.goTo === 'function') {
-        window.carousel.goTo(idx);
-      }
+      window.selectHeroFinish(idx);
       const heroGamme = document.getElementById('gamme');
       if (heroGamme) {
         heroGamme.scrollIntoView({ behavior: 'smooth' });
