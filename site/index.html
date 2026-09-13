@@ -136,10 +136,14 @@
   canvas {
     position: fixed;
     inset: 0;
+    z-index: 1 !important;
+    pointer-events: none;
   }
 
   .section {
     pointer-events: none;
+    position: relative;
+    z-index: 10;
   }
   
   .gamme_container,
@@ -147,13 +151,65 @@
   .benefits_container,
   .argument_container,
   .carousel_title-bis-wrapper,
-  .scan_container {
+  .scan_container,
+  .hud {
     position: fixed;
     inset: 0;
+    z-index: 20 !important;
+    pointer-events: none;
+  }
+
+  /* Interactive elements */
+  .navbar,
+  .navbar_menu,
+  .carousel_nav,
+  .carousel_arrow,
+  .button,
+  a,
+  button,
+  .faq_question,
+  .form_component {
+    pointer-events: auto !important;
+  }
+
+  /* Clear high-contrast text over 3D headphones */
+  .heading-style-h2,
+  .carousel_title,
+  .carousel_title-b,
+  .carousel_title-embed,
+  .profile_title,
+  .benefits_text h2,
+  .heading-style-custom-2 {
+    position: relative;
+    z-index: 30 !important;
+    color: #ffffff !important;
+    text-shadow: 
+      0 2px 14px rgba(0, 0, 0, 0.95),
+      0 4px 32px rgba(0, 0, 0, 0.85),
+      0 8px 64px rgba(0, 0, 0, 0.75) !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .profile_desc p,
+  .benefits_text p,
+  .text-size-medium {
+    position: relative;
+    z-index: 30 !important;
+    color: rgba(255, 255, 255, 0.94) !important;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.95), 0 4px 28px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  /* Ambient radial contrast backing for hero text */
+  .gamme_gradient-blur {
+    background: radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 75%) !important;
+    filter: blur(14px) !important;
+    opacity: 0.85 !important;
+    z-index: 15 !important;
   }
 
   .benefits_nav {
     position: fixed;
+    z-index: 25 !important;
   }
 
   .loader {
@@ -1299,6 +1355,10 @@
     autoRaf: false,
     infinite: true,
     syncTouch: true,
+    duration: 1.8,
+    lerp: 0.05,
+    smoothWheel: true,
+    wheelMultiplier: 0.85,
   });
 
   window.lenis = lenis;
@@ -1354,12 +1414,66 @@
   // #region Carousel State
 
   const canLabels = [
-    { name: 'Obsidian Black', color: 0x141414 },
-    { name: 'Arctic White', color: 0xf2efe8 },
-    { name: 'Rose Copper', color: 0xc17a52 },
-    { name: 'Steel Gray', color: 0x6c7079 },
-    { name: 'Ocean Blue', color: 0x2f4a63 },
-    { name: 'Matte Graphite', color: 0x2b2b2e },
+    {
+      name: 'Obsidian Black',
+      color: 0x141416,
+      shellColor: 0x141416,
+      metalColor: 0x2e2e34,
+      cushionColor: 0x121214,
+      metalness: 0.35,
+      roughness: 0.38,
+      clearcoat: 0.4,
+    },
+    {
+      name: 'Arctic White',
+      color: 0xf4f4f5,
+      shellColor: 0xf8fafc,
+      metalColor: 0xe2e8f0,
+      cushionColor: 0xd8dee9,
+      metalness: 0.15,
+      roughness: 0.22,
+      clearcoat: 0.8,
+    },
+    {
+      name: 'Rose Copper',
+      color: 0xc87556,
+      shellColor: 0xc87556,
+      metalColor: 0xdf7a59,
+      cushionColor: 0x2b1e1a,
+      metalness: 0.85,
+      roughness: 0.28,
+      clearcoat: 0.5,
+    },
+    {
+      name: 'Steel Gray',
+      color: 0x64748b,
+      shellColor: 0x5a6270,
+      metalColor: 0x94a3b8,
+      cushionColor: 0x1e242d,
+      metalness: 0.92,
+      roughness: 0.22,
+      clearcoat: 0.4,
+    },
+    {
+      name: 'Ocean Blue',
+      color: 0x1e3a8a,
+      shellColor: 0x1d3557,
+      metalColor: 0x3a608f,
+      cushionColor: 0x0c192c,
+      metalness: 0.8,
+      roughness: 0.26,
+      clearcoat: 0.6,
+    },
+    {
+      name: 'Matte Graphite',
+      color: 0x27272a,
+      shellColor: 0x28292d,
+      metalColor: 0x4b4d53,
+      cushionColor: 0x17181a,
+      metalness: 0.5,
+      roughness: 0.48,
+      clearcoat: 0.1,
+    },
   ];
   window.headphoneFinishes = canLabels;
 
@@ -1601,10 +1715,26 @@
   // unreachable CDN, so it is replaced with an equivalent procedural ring
   // pair using the same material and the same two-child structure the
   // baseOffset scroll animation expects (base.children[0] / [1]).
+  // Hoops: 2 large procedural resonance rings that pass completely over/around
+  // the headphones without clipping through the geometry.
   const base = new THREE.Group();
-  const ringGeometry = new THREE.TorusGeometry(2.6, 0.05, 16, 96);
-  const ringTop = new THREE.Mesh(ringGeometry, baseMaterial);
-  const ringBottom = new THREE.Mesh(ringGeometry, baseMaterial);
+  const ringGeometry = new THREE.TorusGeometry(3.8, 0.045, 24, 128);
+  const hoopMaterial = makeMaterial({
+    color: 0xe2e8f0,
+    metalness: 0.95,
+    roughness: 0.18,
+    sheen: 0.6,
+    sheenColor: 0x93c5fd,
+    emissive: 0x0f172a,
+    emissiveIntensity: 0.35,
+    reflectivity: 1,
+    ior: 2.2,
+    envMapIntensity: 0.9,
+  });
+  applyEnvironmentTint(hoopMaterial);
+
+  const ringTop = new THREE.Mesh(ringGeometry, hoopMaterial);
+  const ringBottom = new THREE.Mesh(ringGeometry, hoopMaterial);
   ringTop.rotation.x = Math.PI / 2;
   ringBottom.rotation.x = Math.PI / 2;
   base.add(ringTop);
@@ -1614,12 +1744,9 @@
   // #endregion Base
   // #region Cans
 
-  // Load all three headphone models for variety in the carousel
-  const [headphoneGltf, hyperxGltf, boseGltf] = await Promise.all([
-    gltfLoader.loadAsync('./assets/models/headphone/scene.gltf'),
-    gltfLoader.loadAsync('./stylized_hyperx_headphones_game_asset/scene.gltf'),
-    gltfLoader.loadAsync('./bose_qc35_wireless_headphone_high_poly/scene.gltf'),
-  ]);
+  // High-performance loading: Load ONLY the lightweight 400KB headphone model
+  // (instead of downloading 41MB across 3 models) for instant load speed.
+  const headphoneGltf = await gltfLoader.loadAsync('./assets/models/headphone/scene.gltf');
 
   // Bounding-box normalization: scale model so its largest dimension = targetSize.
   const normalizeModel = (root, targetSize = 6.0) => {
@@ -1637,8 +1764,7 @@
     return wrapper;
   };
 
-  // Convert headphoneGltf from SkinnedMeshes to standard Meshes so cloning and scaling
-  // work properly without detached skeleton/bone transformations shrinking the model.
+  // Convert headphoneGltf from SkinnedMeshes to standard Meshes for flawless cloning.
   const unskinnedHeadphone = new THREE.Group();
   headphoneGltf.scene.updateMatrixWorld(true);
   headphoneGltf.scene.traverse((child) => {
@@ -1649,50 +1775,48 @@
     }
   });
 
-  const headphoneTemplate = normalizeModel(unskinnedHeadphone, 6.0);
+  const headphoneTemplate = normalizeModel(unskinnedHeadphone, 5.8);
   headphoneTemplate.traverse((child) => {
     if (!child.isMesh) return;
     child.castShadow = false;
     child.receiveShadow = false;
   });
 
-  const hyperxTemplate = normalizeModel(hyperxGltf.scene, 6.0);
-  hyperxTemplate.traverse((child) => {
-    if (!child.isMesh) return;
-    child.castShadow = false;
-    child.receiveShadow = false;
-  });
-
-  const boseTemplate = normalizeModel(boseGltf.scene, 6.0);
-  boseTemplate.traverse((child) => {
-    if (!child.isMesh) return;
-    child.castShadow = false;
-    child.receiveShadow = false;
-  });
-
-  // Cycle through 3 templates: index 0,3 = original; 1,4 = hyperx; 2,5 = bose
-  const modelTemplates = [headphoneTemplate, hyperxTemplate, boseTemplate];
-
-  // Material slot names for the original headphone shell tinting
-  const SHELL_MATERIAL_NAMES = ['mousegray', 'metalszary', 'mouseblack'];
-
+  // Create each distinct finish using bespoke PBR material techniques on the single model
   const createCan = async (finish, index) => {
-    const template = modelTemplates[index % modelTemplates.length];
-    const can = template.clone(true);
+    const can = headphoneTemplate.clone(true);
 
     can.traverse((child) => {
       if (!child.isMesh || !child.material) return;
+      const matName = (child.material.name || '').toLowerCase();
       const material = child.material.clone();
-      // Tint shell materials on the original model; on the other models tint everything
-      if (index % modelTemplates.length === 0) {
-        if (SHELL_MATERIAL_NAMES.includes(child.material.name)) {
-          material.color = new THREE.Color(finish.color);
-        }
+
+      if (matName.includes('mousegray') || matName.includes('mouseblack')) {
+        // Outer ear cups & headband shell
+        material.color = new THREE.Color(finish.shellColor);
+        material.metalness = finish.metalness;
+        material.roughness = finish.roughness;
+        material.clearcoat = finish.clearcoat;
+        material.clearcoatRoughness = 0.15;
+      } else if (matName.includes('metalszary')) {
+        // High-polish metal sliders, pivot hinges & brackets
+        material.color = new THREE.Color(finish.metalColor);
+        material.metalness = 0.95;
+        material.roughness = 0.2;
+      } else if (matName.includes('ekoskora')) {
+        // Supple memory foam ear cushions & headband leather
+        material.color = new THREE.Color(finish.cushionColor);
+        material.roughness = 0.68;
+        material.metalness = 0.05;
+      } else if (matName.includes('foam')) {
+        // Inner acoustic mesh
+        material.color = new THREE.Color(finish.cushionColor).multiplyScalar(0.75);
+        material.roughness = 0.9;
       } else {
-        // For hyperx and bose, apply a subtle color tint via envMap
-        material.envMapIntensity = 1.4;
+        material.color = new THREE.Color(finish.shellColor);
       }
-      material.envMapIntensity = 1.2;
+
+      material.envMapIntensity = 1.3;
       child.material = material;
       applyEnvironmentTint(child.material);
     });
@@ -1702,30 +1826,16 @@
     return can;
   };
 
-  const duplicateCan = (item) => {
-    const can = item.clone();
-    scene.add(can);
-    return can;
-  };
-
   const promises = [];
   canLabels.forEach((finish, i) => {
     promises.push(createCan(finish, i));
   });
 
+  // Keep exactly the 6 distinct finishes without duplicate clones to prevent clustering
   await Promise.all(promises).then((items) => {
     items.forEach((item) => {
       cans.push(item);
     });
-
-    const targetCount = lowPower ? 12 : 24;
-    let i = 0;
-    if (cans.length !== 0) {
-      while (cans.length < targetCount) {
-        cans.push(duplicateCan(cans[i % canLabels.length]));
-        i++;
-      }
-    }
   });
 
   // #endregion Cans
@@ -1741,7 +1851,7 @@
     raycast.setFromCamera(mouse, camera);
 
     cans.forEach((can, i) => {
-      if (raycast.intersectObject(can).length > 0) {
+      if (raycast.intersectObject(can, true).length > 0) {
         const delta = Math.round(can.position.x / carousel.spacing);
 
         if (delta > 0) carousel.next();
@@ -1780,7 +1890,7 @@
 
     let hoverActive = false;
     cans.forEach((can, i) => {
-      if (raycast.intersectObject(can).length > 0) {
+      if (raycast.intersectObject(can, true).length > 0) {
         const canIndex = i % canLabels.length;
         if (canIndex === carousel.index) hoverActive = true;
       }
@@ -1864,12 +1974,12 @@
   const data = {
     camPosX: 0,
     camPosY: 0,
-    camPosZ: 24,
+    camPosZ: 22,
     camRotX: 0,
     camRotY: 0,
     camRotZ: 0,
-    fov: 20,
-    canScale: 1,
+    fov: 22,
+    canScale: 1.15,
     canPosX: 0,
     canPosY: 0,
     canPosZ: 0,
@@ -1877,17 +1987,17 @@
     canRotY: 0,
     canRotZ: 0,
     canSpin: 0,
-    spacing: 1,
+    spacing: 3.8,
     wave: 1,
     swirl: 0,
-    baseOffset: 0,
-    lightIntensity: 50,
-    lightWidth: 1,
+    baseOffset: 3.8, // Hoops frame completely over/around the headphone with no clipping
+    lightIntensity: 45,
+    lightWidth: 1.2,
     tintStrength: 1,
     spotIntensity: 0,
     spotY: 3,
-    pointerInfluence: 0.2,
-    swipeSpeed: 1,
+    pointerInfluence: 0.15,
+    swipeSpeed: 0.8,
   };
 
   const startData = JSON.parse(JSON.stringify(data));
@@ -1896,72 +2006,72 @@
     let i = 0;
     const tl = gsap.timeline({
       defaults: {
-        ease: 'power1.inOut',
+        ease: 'sine.inOut',
       },
     });
 
-    // Taste
+    // Taste - slow, smooth dolly in; hoops pass completely over the headphones
     tl.to(data, {
       camPosX: 0,
-      camPosY: 0,
-      camPosZ: 6,
-      camRotX: 0,
-      camRotY: 0,
-      camRotZ: 0,
-      fov: 40,
-      canScale: 1,
-      canPosX: 0.5,
-      canPosY: -0.5,
+      camPosY: -0.2,
+      camPosZ: 14,
+      camRotX: (Math.PI / 180) * -10,
+      camRotY: (Math.PI / 180) * 12,
+      camRotZ: (Math.PI / 180) * 8,
+      fov: 28,
+      canScale: 1.1,
+      canPosX: 0.25,
+      canPosY: -0.3,
       canPosZ: 0,
-      canRotX: (Math.PI / 180) * -37.5,
-      canRotY: (Math.PI / 180) * 15,
-      canRotZ: (Math.PI / 180) * 22.5,
+      canRotX: (Math.PI / 180) * -20,
+      canRotY: (Math.PI / 180) * 20,
+      canRotZ: (Math.PI / 180) * 12,
       canSpin: 0,
-      spacing: 3.5,
+      spacing: 3.8,
       wave: 0,
       swirl: 0,
-      baseOffset: 3,
-      lightIntensity: 30,
-      lightWidth: 1,
+      baseOffset: -3.8, // Smoothly glides completely through and over the headphones
+      lightIntensity: 35,
+      lightWidth: 1.2,
       tintStrength: 1,
-      spotIntensity: 0,
+      spotIntensity: 10,
       spotY: 3,
-      pointerInfluence: 0.2,
-      swipeSpeed: 1,
+      pointerInfluence: 0.15,
+      swipeSpeed: 0.8,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
 
     tl.set(swipe, { active: false });
 
-    // Advantage 1
+    // Advantage 1 - Smooth showcase angle
     tl.to(data, {
       camPosX: 0,
-      camPosY: -2,
-      camPosZ: 12,
-      camRotX: (Math.PI / 180) * 10,
+      camPosY: -1.2,
+      camPosZ: 15,
+      camRotX: (Math.PI / 180) * 8,
       camRotY: 0,
-      camRotZ: (Math.PI / 180) * -10,
-      fov: 20,
-      canScale: 1,
+      camRotZ: (Math.PI / 180) * -6,
+      fov: 22,
+      canScale: 1.1,
       canPosX: 0,
-      canPosY: -0.8,
+      canPosY: -0.4,
       canPosZ: 0,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 120,
-      spacing: 2.2,
+      canSpin: (Math.PI / 180) * 80,
+      spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 3,
+      baseOffset: 3.8, // Hoops return smoothly to framing the headphone
       lightIntensity: 45,
-      lightWidth: 1,
+      lightWidth: 1.2,
       tintStrength: 0.8,
-      spotIntensity: 35,
+      spotIntensity: 30,
       spotY: 2.2,
       pointerInfluence: 0,
-      swipeSpeed: 1,
+      swipeSpeed: 0.8,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
@@ -1969,31 +2079,31 @@
     // Advantage 2
     tl.to(data, {
       camPosX: 0,
-      camPosY: -2,
-      camPosZ: 12,
-      camRotX: (Math.PI / 180) * 10,
+      camPosY: -1.2,
+      camPosZ: 15,
+      camRotX: (Math.PI / 180) * 8,
       camRotY: 0,
-      camRotZ: (Math.PI / 180) * 5,
-      fov: 20,
-      canScale: 1,
+      camRotZ: (Math.PI / 180) * 4,
+      fov: 22,
+      canScale: 1.1,
       canPosX: 0,
-      canPosY: -0.48,
+      canPosY: -0.25,
       canPosZ: 0,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 130,
-      spacing: 2.2,
+      canSpin: (Math.PI / 180) * 90,
+      spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 3,
+      baseOffset: 3.8,
       lightIntensity: 45,
-      lightWidth: 1,
+      lightWidth: 1.2,
       tintStrength: 0.8,
-      spotIntensity: 35,
+      spotIntensity: 30,
       spotY: 2.2,
       pointerInfluence: 0,
-      swipeSpeed: 1,
+      swipeSpeed: 0.8,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
@@ -2001,31 +2111,31 @@
     // Advantage 3
     tl.to(data, {
       camPosX: 0,
-      camPosY: -2,
-      camPosZ: 12,
-      camRotX: (Math.PI / 180) * 10,
+      camPosY: -1.2,
+      camPosZ: 15,
+      camRotX: (Math.PI / 180) * 8,
       camRotY: 0,
-      camRotZ: (Math.PI / 180) * -10,
-      fov: 20,
-      canScale: 1,
+      camRotZ: (Math.PI / 180) * -6,
+      fov: 22,
+      canScale: 1.1,
       canPosX: 0,
-      canPosY: 0.02,
+      canPosY: 0,
       canPosZ: 0,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 120,
-      spacing: 2.2,
+      canSpin: (Math.PI / 180) * 80,
+      spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 3,
+      baseOffset: 3.8,
       lightIntensity: 45,
-      lightWidth: 1,
+      lightWidth: 1.2,
       tintStrength: 0.8,
-      spotIntensity: 35,
+      spotIntensity: 30,
       spotY: 2.2,
       pointerInfluence: 0,
-      swipeSpeed: 1,
+      swipeSpeed: 0.8,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
@@ -2033,31 +2143,31 @@
     // Advantage 4
     tl.to(data, {
       camPosX: 0,
-      camPosY: -2,
-      camPosZ: 12,
-      camRotX: (Math.PI / 180) * 10,
+      camPosY: -1.2,
+      camPosZ: 15,
+      camRotX: (Math.PI / 180) * 8,
       camRotY: 0,
-      camRotZ: (Math.PI / 180) * 5,
-      fov: 20,
-      canScale: 1,
+      camRotZ: (Math.PI / 180) * 4,
+      fov: 22,
+      canScale: 1.1,
       canPosX: 0,
-      canPosY: 0.5,
+      canPosY: 0.25,
       canPosZ: 0,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 130,
-      spacing: 2.2,
+      canSpin: (Math.PI / 180) * 90,
+      spacing: 3.6,
       wave: 0,
       swirl: 0,
-      baseOffset: 3,
+      baseOffset: 3.8,
       lightIntensity: 45,
-      lightWidth: 1,
+      lightWidth: 1.2,
       tintStrength: 0.8,
-      spotIntensity: 35,
+      spotIntensity: 30,
       spotY: 2.2,
       pointerInfluence: 0,
-      swipeSpeed: 1,
+      swipeSpeed: 0.8,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
@@ -2066,64 +2176,64 @@
     tl.to(data, {
       camPosX: 0,
       camPosY: 0,
-      camPosZ: 8,
+      camPosZ: 13,
       camRotX: 0,
       camRotY: 0,
       camRotZ: 0,
-      fov: 45,
-      canScale: 1,
+      fov: 34,
+      canScale: 1.1,
       canPosX: 0,
       canPosY: 0,
-      canPosZ: -0.5,
-      canRotX: (Math.PI / 180) * -20,
+      canPosZ: -0.2,
+      canRotX: (Math.PI / 180) * -12,
       canRotY: 0,
-      canRotZ: (Math.PI / 180) * -5,
+      canRotZ: (Math.PI / 180) * -4,
       canSpin: 0,
-      spacing: 5,
+      spacing: 4.2,
       wave: 0,
       swirl: 0,
-      baseOffset: 3,
+      baseOffset: 3.8,
       lightIntensity: 45,
       lightWidth: 1.5,
-      tintStrength: 2,
+      tintStrength: 1.5,
       spotIntensity: 0,
       spotY: 3,
-      pointerInfluence: 0.2,
-      swipeSpeed: 1,
+      pointerInfluence: 0.15,
+      swipeSpeed: 0.8,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
 
     tl.set(swipe, { active: true });
 
-    // Packshot
+    // Packshot - graceful spacing without exploding or clustering
     tl.to(data, {
-      camPosX: -3,
-      camPosY: -3.5,
-      camPosZ: 20,
-      camRotX: (Math.PI / 180) * 10,
-      camRotY: (Math.PI / 180) * -9,
-      camRotZ: (Math.PI / 180) * -10,
-      fov: 30,
-      canScale: 1,
+      camPosX: -2,
+      camPosY: -2.5,
+      camPosZ: 18,
+      camRotX: (Math.PI / 180) * 8,
+      camRotY: (Math.PI / 180) * -8,
+      camRotZ: (Math.PI / 180) * -6,
+      fov: 26,
+      canScale: 1.05,
       canPosX: 0,
       canPosY: 0,
-      canPosZ: -0.4,
+      canPosZ: -0.2,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
       canSpin: 0,
-      spacing: 0.47,
+      spacing: 3.4,
       wave: 0,
-      swirl: 1,
-      baseOffset: 20,
-      lightIntensity: 10,
-      lightWidth: 3,
-      tintStrength: 2,
+      swirl: 0.15,
+      baseOffset: 4.0, // Smooth expansion, never violent 20
+      lightIntensity: 20,
+      lightWidth: 2.2,
+      tintStrength: 1.5,
       spotIntensity: 0,
       spotY: 3,
       pointerInfluence: 0,
-      swipeSpeed: 2,
+      swipeSpeed: 1,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
@@ -2131,46 +2241,46 @@
     // Move offscreen
     tl.to(data, {
       camPosX: 0,
-      camPosY: -5.5,
-      camPosZ: 10,
+      camPosY: -4.5,
+      camPosZ: 14,
       camRotX: 0,
       camRotY: 0,
       camRotZ: 0,
-      fov: 30,
+      fov: 26,
       canScale: 1,
       canPosX: 0,
       canPosY: 0,
-      canPosZ: -0.4,
+      canPosZ: -0.2,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
       canSpin: 0,
-      spacing: 0.6,
+      spacing: 3.6,
       wave: 0,
-      swirl: 1,
-      baseOffset: 20,
+      swirl: 0.1,
+      baseOffset: 4.2,
       lightIntensity: 0,
-      lightWidth: 3,
+      lightWidth: 2.5,
       spotIntensity: 0,
       spotY: 3,
       pointerInfluence: 0,
-      swipeSpeed: 1,
+      swipeSpeed: 0.8,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
 
     tl.set(swipe, { active: false });
 
-    // Téléport : cam saute en haut
+    // Teleport: camera smoothly resets
     tl.set(data, {
       camPosX: 0,
-      camPosY: 8,
-      camPosZ: 10,
+      camPosY: 6,
+      camPosZ: 14,
       camRotX: 0,
       camRotY: 0,
       camRotZ: 0,
-      fov: 20,
-      spacing: 5,
+      fov: 22,
+      spacing: 4,
       swirl: 0,
     });
 
@@ -2178,35 +2288,35 @@
     tl.to(data, {
       camPosX: 0,
       camPosY: 0,
-      camPosZ: 24,
+      camPosZ: 22,
       camRotX: 0,
       camRotY: 0,
       camRotZ: 0,
-      fov: 20,
-      canScale: 1,
+      fov: 22,
+      canScale: 1.15,
       canPosX: 0,
       canPosY: 0,
-      canPosZ: 0.5,
+      canPosZ: 0.3,
       canRotX: 0,
       canRotY: 0,
       canRotZ: 0,
-      canSpin: (Math.PI / 180) * 20,
-      spacing: 5,
+      canSpin: (Math.PI / 180) * 15,
+      spacing: 3.8,
       wave: 0,
       swirl: 0,
-      baseOffset: 10,
-      lightIntensity: 50,
-      lightWidth: 1,
+      baseOffset: 3.8,
+      lightIntensity: 45,
+      lightWidth: 1.2,
       tintStrength: 1,
       spotIntensity: 0,
       spotY: 3,
-      pointerInfluence: 0.2,
-      swipeSpeed: 1,
+      pointerInfluence: 0.15,
+      swipeSpeed: 0.8,
       duration: section.items[i].height / lenis.dimensions.scrollHeight,
     });
     i += 1;
 
-    // Loop : retour aux valeurs initiales pour boucle infinie
+    // Loop : return to startData
     tl.to(data, {
       ...startData,
       duration: section.items[i] ? section.items[i].height / lenis.dimensions.scrollHeight : 1,
@@ -2242,8 +2352,8 @@
 
     const tl = gsap.timeline({
       defaults: {
-        ease: 'power4.out',
-        duration: 1.2,
+        ease: 'sine.out',
+        duration: 2.2,
       },
     });
 
@@ -2251,21 +2361,21 @@
     carousel.position = carousel.offset;
 
     tl.set(data, {
-      camPosZ: 25,
-      spacing: 10,
-      baseOffset: 3,
+      camPosZ: 24,
+      spacing: 4.5,
+      baseOffset: 3.8,
       wave: 0,
       swirl: 0,
       lightWidth: 2,
       lightIntensity: 0,
-      canSpin: (Math.PI / 180) * 20,
+      canSpin: (Math.PI / 180) * 12,
       pointerInfluence: 0,
     });
 
     tl.to(
       data,
       {
-        lightIntensity: 30,
+        lightIntensity: 45,
       },
       0,
     );
@@ -2273,12 +2383,12 @@
     tl.to(
       data,
       {
-        camPosZ: 24,
+        camPosZ: 22,
       },
-      0.5,
+      0.8,
     );
 
-    tl.to(data, startData, 1.0);
+    tl.to(data, startData, 1.4);
 
     loader.timeline = tl;
 
@@ -2386,16 +2496,16 @@
     const maxX = cans.length * 0.5 * carousel.spacing;
     const size = maxX - minX;
 
-    carousel.target -= swipe.deltaX * 0.02 * data.swipeSpeed;
+    carousel.target -= swipe.deltaX * 0.015 * data.swipeSpeed;
     swipe.deltaX = 0;
 
-    // Pointer smoothing
-    pointer.smoothX = lerp(pointer.smoothX, pointer.x, delta * 10);
-    pointer.smoothY = lerp(pointer.smoothY, pointer.y, delta * 10);
+    // Pointer smoothing (calm, slow luxurious response)
+    pointer.smoothX = lerp(pointer.smoothX, pointer.x, delta * 4);
+    pointer.smoothY = lerp(pointer.smoothY, pointer.y, delta * 4);
 
     if (!animation.paused) {
       if (!swipe.holding) carousel.target = carousel.getRounded(carousel.target);
-      carousel.position = lerp(carousel.position, carousel.target, delta * 10);
+      carousel.position = lerp(carousel.position, carousel.target, delta * 3.5);
     }
 
     camera.fov = data.fov;
@@ -2423,16 +2533,16 @@
       // Carousel
       let p = clamp(1 - Math.abs(x) / carousel.spacing, 0, 1);
       const p1 = Math.min(p, p0);
-      let canScale = 1.2;
+      let canScale = 1.15;
       let canPosX = x * data.spacing;
       let canPosY = Math.sin(canPosX * wave);
       let canPosZ = (Math.abs(x) * -1 - 0.2) * data.wave;
-      let canRotX = (-Math.PI / 180) * 20 * data.wave;
-      let canRotY = (canPosX * 0.5 - (Math.PI / 180) * 20) * data.wave;
-      let canRotZ = (Math.PI / 360) * 22.5 * data.wave;
+      let canRotX = (-Math.PI / 180) * 15 * data.wave;
+      let canRotY = (canPosX * 0.4 - (Math.PI / 180) * 15) * data.wave;
+      let canRotZ = (Math.PI / 360) * 18 * data.wave;
 
       // Packshot (swirl)
-      canRotX = lerp(canRotX, x * 0.06 * windowRatio + 0.2, data.swirl);
+      canRotX = lerp(canRotX, x * 0.04 * windowRatio + 0.1, data.swirl);
 
       // Lerp to data
       canScale = lerp(canScale, data.canScale, p0);
@@ -2451,74 +2561,46 @@
       can.rotation.z = canRotZ;
       can.scale.set(canScale, canScale, canScale);
 
-      // Hero 3-model revolving showcase at start (p0=0 → fully visible, fades as user scrolls)
-      const heroInfluence = clamp(1 - p0 * 3.0, 0, 1);
+      // Hero spotlight at start (p0=0): active finish in center rotates slowly, flanked cleanly with NO cluster
+      const heroInfluence = clamp(1 - p0 * 2.0, 0, 1);
       if (heroInfluence > 0) {
-        // Identify center (i=0), right (i=1), left (i=last) by their wrapped x position
-        const iCenter = Math.abs(x) < 1.0;
-        const iRight = x > 1.0 && x < 6.0;
-        const iLeft = x < -1.0 && x > -6.0;
-        const isHero = iCenter || iLeft || iRight;
-
-        if (isHero) {
-          let hPosX, hPosY, hPosZ, hScale, hRotX, hRotY, hRotZ;
-
-          if (iCenter) {
-            hPosX = 0;
-            hPosY = 0.1;
-            hPosZ = 0.1;
-            hScale = 1.35;
-            hRotX = (-Math.PI / 180) * 6;
-            hRotY = time * 0.42;
-            hRotZ = (Math.PI / 180) * 3;
-          } else if (iLeft) {
-            hPosX = -5.6;
-            hPosY = -0.1;
-            hPosZ = -2.0;
-            hScale = 0.95;
-            hRotX = (-Math.PI / 180) * 5;
-            hRotY = 0.6 + time * 0.42;
-            hRotZ = (-Math.PI / 180) * 8;
-          } else {
-            hPosX = 5.6;
-            hPosY = -0.1;
-            hPosZ = -2.0;
-            hScale = 0.95;
-            hRotX = (-Math.PI / 180) * 5;
-            hRotY = -0.6 + time * 0.42;
-            hRotZ = (Math.PI / 180) * 8;
-          }
-
-          can.position.x = lerp(can.position.x, hPosX, heroInfluence);
-          can.position.y = lerp(can.position.y, hPosY, heroInfluence);
-          can.position.z = lerp(can.position.z, hPosZ, heroInfluence);
-          const blendedScale = lerp(canScale, hScale, heroInfluence);
-          can.scale.set(blendedScale, blendedScale, blendedScale);
-          can.rotation.x = lerp(can.rotation.x, hRotX, heroInfluence);
-          can.rotation.y = lerp(can.rotation.y, hRotY, heroInfluence);
-          can.rotation.z = lerp(can.rotation.z, hRotZ, heroInfluence);
+        const distFromCenter = Math.abs(x);
+        if (distFromCenter < carousel.spacing * 0.5) {
+          // Centered active headphone: slow majestic rotation, prominent display
+          can.position.x = lerp(can.position.x, 0, heroInfluence);
+          can.position.y = lerp(can.position.y, 0, heroInfluence);
+          can.position.z = lerp(can.position.z, 0.2, heroInfluence);
+          can.scale.setScalar(lerp(canScale, 1.25, heroInfluence));
+          can.rotation.y = lerp(can.rotation.y, time * 0.18, heroInfluence);
+          can.rotation.x = lerp(can.rotation.x, (-Math.PI / 180) * 6, heroInfluence);
+          can.rotation.z = lerp(can.rotation.z, (Math.PI / 180) * 3, heroInfluence);
         } else {
-          // Non-hero models: push them far behind camera during hero mode
-          can.position.z = lerp(can.position.z, -40, heroInfluence * 0.95);
-          const hiddenScale = lerp(canScale, 0.001, heroInfluence);
-          can.scale.set(hiddenScale, hiddenScale, hiddenScale);
+          // Side headphones stay cleanly spaced at non-overlapping positions
+          const sideX = (x > 0 ? 1 : -1) * (carousel.spacing * 1.5);
+          can.position.x = lerp(can.position.x, sideX, heroInfluence * 0.5);
+          can.position.z = lerp(can.position.z, -3.0, heroInfluence * 0.7);
+          can.scale.setScalar(lerp(canScale, 0.9, heroInfluence * 0.6));
+          can.rotation.y = lerp(can.rotation.y, (x > 0 ? -0.35 : 0.35) + time * 0.18, heroInfluence);
         }
       }
 
       // Mouse interaction
-      can.rotation.y += (pointer.smoothX / 1280) * data.pointerInfluence * p;
-      can.rotation.x += (pointer.smoothY / 1280) * data.pointerInfluence * p;
+      can.rotation.y += (pointer.smoothX / 1600) * data.pointerInfluence * p;
+      can.rotation.x += (pointer.smoothY / 1600) * data.pointerInfluence * p;
 
-      can.children.forEach((child, i) => {
+      can.children.forEach((child) => {
         if (child.isMesh) {
-          child.rotation.z = can.rotation.y * 0.6 + data.canSpin * p;
+          child.rotation.z = can.rotation.y * 0.4 + data.canSpin * p;
         }
       });
     });
     // ====== FIN ANIM CANNETTES ======
 
-    base.children[0].position.y = -1 * data.baseOffset;
-    base.children[1].position.y = 1 * data.baseOffset;
+    // Hoops: smoothly pass completely over and around the headphones without clipping
+    base.children[0].position.y = data.baseOffset;
+    base.children[1].position.y = -data.baseOffset;
+    base.children[0].rotation.z = time * 0.12;
+    base.children[1].rotation.z = -time * 0.12;
 
     camera.position.x = data.camPosX;
     camera.position.y = data.camPosY;
